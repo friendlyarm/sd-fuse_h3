@@ -1,0 +1,3 @@
+xmit_in_suspend=0
+dhd_master_mode=0
+pkt_filter_add=99 0 0 0 0x000000000000 0x000000000000

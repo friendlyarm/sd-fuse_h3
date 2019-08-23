@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eu
 
 # Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
 # (http://www.friendlyarm.com)
@@ -17,17 +18,17 @@
 # along with this program; if not, you can access it online at
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
-true ${SOC:=s5p4418}
+true ${SOC:=h3}
+true ${DISABLE_MKIMG:=0}
 
 KERNEL_REPO=https://github.com/friendlyarm/linux
-KERNEL_BRANCH=nanopi2-v4.4.y
-KERNEL_DIRNAME=kernel-$SOC
+KERNEL_BRANCH=sunxi-4.14.y
 
 ARCH=arm
-KCFG=nanopi2_linux_defconfig
+KCFG=sunxi_defconfig
 KIMG=arch/${ARCH}/boot/zImage
-KDTB=arch/${ARCH}/boot/dts/s5p4418-nanopi2-*.dtb
-KALL=
+KDTB=arch/${ARCH}/boot/dts/sun8i-*-nanopi-*.dtb
+KALL="zImage dtbs"
 CROSS_COMPILER=arm-linux-
 
 # 
@@ -39,14 +40,6 @@ CROSS_COMPILER=arm-linux-
 # KERNEL_LOGO=/tmp/logo_kernel.bmp
 #
 
-# Automatically re-run script under sudo if not root
-if [ $(id -u) -ne 0 ]; then
-	echo "Re-running script under sudo..."
-	sudo "$0" "$@"
-	exit
-fi
-
-
 TOPPATH=$PWD
 OUT=$TOPPATH/out
 if [ ! -d $OUT ]; then
@@ -54,21 +47,24 @@ if [ ! -d $OUT ]; then
 	exit 1
 fi
 KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
+true ${KERNEL_SRC:=${OUT}/kernel-${SOC}}
 
 function usage() {
-       echo "Usage: $0 <friendlycore|lubuntu>"
+       echo "Usage: $0 <friendlycore-xenial_4.14_armhf|friendlywrt_4.14_armhf|eflasher>"
        echo "# example:"
        echo "# clone kernel source from github:"
-       echo "    git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${OUT}/${KERNEL_DIRNAME}"
+       echo "    git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
        echo "# or clone your local repo:"
-       echo "    git clone git@192.168.1.2:/path/to/linux.git --depth 1 -b ${KERNEL_BRANCH} out/kernel-${SOC}"
+       echo "    git clone git@192.168.1.2:/path/to/linux.git --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
        echo "# then"
-       echo "    ./build-kernel.sh friendlycore"
-       echo "    ./mk-emmc-image.sh friendlycore"
+       echo "    ./build-kernel.sh friendlycore-xenial_4.14_armhf"
+       echo "    ./mk-emmc-image.sh friendlycore-xenial_4.14_armhf"
+       echo "# also can do:"
+       echo "    KERNEL_SRC=~/mykernel ./build-kernel.sh friendlycore-xenial_4.14_armhf"
        exit 0
 }
 
-if [ -z $1 ]; then
+if [ $# -ne 1 ]; then
     usage
 fi
 
@@ -78,11 +74,11 @@ true ${TARGET_OS:=${1,,}}
 PARTMAP=./${TARGET_OS}/partmap.txt
 
 case ${TARGET_OS} in
-friendlycore* | lubuntu* | eflasher)
+friendlycore-xenial_4.14_armhf | friendlywrt_4.14_armhf | eflasher)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
-        exit 0
+        exit 1
 esac
 
 download_img() {
@@ -115,24 +111,9 @@ EOF
     fi
 }
 
-function build_kernel_modules() {
-    rm -rf ${KMODULES_OUTDIR}
-    mkdir -p ${KMODULES_OUTDIR}
-    make ARCH=${ARCH} INSTALL_MOD_PATH=${KMODULES_OUTDIR} modules -j$(nproc)
-    make ARCH=${ARCH} INSTALL_MOD_PATH=${KMODULES_OUTDIR} modules_install
-    (cd ${KMODULES_OUTDIR} && find . -name \*.ko | xargs ${CROSS_COMPILER}strip --strip-unneeded)
-}
-
-download_img ${TARGET_OS}
-
-if [ ! -d ${OUT}/${KERNEL_DIRNAME} ]; then
-	git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${OUT}/${KERNEL_DIRNAME}
+if [ ! -d ${KERNEL_SRC} ]; then
+	git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}
 fi
-
-KERNEL_BUILD_DIR=${OUT}/${KERNEL_DIRNAME}_build
-rm -rf ${KERNEL_BUILD_DIR} 
-echo "coping kernel src..."
-rsync -a --exclude='.git/' ${OUT}/${KERNEL_DIRNAME}/* ${KERNEL_BUILD_DIR}
 
 if [ ! -d /opt/FriendlyARM/toolchain/4.9.3 ]; then
 	echo "please install arm-linux-gcc 4.9.3 first, using these commands: "
@@ -143,93 +124,57 @@ if [ ! -d /opt/FriendlyARM/toolchain/4.9.3 ]; then
 fi
 export PATH=/opt/FriendlyARM/toolchain/4.9.3/bin/:$PATH
 
-cd ${KERNEL_BUILD_DIR}
+cd ${KERNEL_SRC}
 make distclean
 touch .scmversion
 make ARCH=${ARCH} ${KCFG}
-if [ x"${TARGET_OS}" = x"eflasher" ]; then
-    cp -avf .config .config.old
-    sed -i "s/.*\(PROT_MT_SYNC\).*/CONFIG_TOUCHSCREEN_\1=y/g" .config
-    sed -i "s/\(.*PROT_MT_SLOT\).*/# \1 is not set/g" .config
-fi
-
-make ARCH=${ARCH} ${KALL} -j$(nproc)
-build_kernel_modules
-
-if [ $? -eq 0 ]; then
-	echo "build kernel ok."
-else
-	echo "fail to build kernel."
+if [ $? -ne 0 ]; then
+	echo "failed to build kernel."
 	exit 1
 fi
+make ARCH=${ARCH} ${KALL} CROSS_COMPILE=${CROSS_COMPILER} -j$(nproc)
+if [ $? -ne 0 ]; then
+        echo "failed to build kernel."
+        exit 1
+fi
+
+rm -rf ${KMODULES_OUTDIR}
+mkdir -p ${KMODULES_OUTDIR}
+make ARCH=${ARCH} INSTALL_MOD_PATH=${KMODULES_OUTDIR} modules -j$(nproc) CROSS_COMPILE=${CROSS_COMPILER}
+if [ $? -ne 0 ]; then
+	echo "failed to build kernel modules."
+        exit 1
+fi
+make ARCH=${ARCH} INSTALL_MOD_PATH=${KMODULES_OUTDIR} modules_install CROSS_COMPILE=${CROSS_COMPILER}
+if [ $? -ne 0 ]; then
+	echo "failed to build kernel modules."
+        exit 1
+fi
+(cd ${KMODULES_OUTDIR} && find . -name \*.ko | xargs ${CROSS_COMPILER}strip --strip-unneeded)
 
 if [ ! -d ${KMODULES_OUTDIR}/lib ]; then
 	echo "not found kernel modules."
 	exit 1
 fi
 
+if [ x"$DISABLE_MKIMG" = x"1" ]; then
+    exit 0
+fi
+
+echo "building kernel ok."
 if ! [ -x "$(command -v simg2img)" ]; then
     sudo apt update
     sudo apt install android-tools-fsutils
 fi
 
-cd $TOPPATH
+cd ${TOPPATH}
+download_img ${TARGET_OS}
+./tools/update_kernel_bin_to_img.sh ${OUT} ${KERNEL_SRC} ${TOPPATH}/${TARGET_OS} ${TOPPATH}/prebuilt
 
-# copy kernel to boot.img
-if [ -f ${TARGET_OS}/boot.img ]; then
-    simg2img ${TARGET_OS}/boot.img ${TARGET_OS}/r.img
-    mkdir -p ${OUT}/old_boot
-    mount -t ext4 -o loop ${TARGET_OS}/r.img ${OUT}/old_boot
-    mkdir -p ${OUT}/boot
-    rm -rf ${OUT}/boot/*
-    cp -af ${OUT}/old_boot/* ${OUT}/boot
-    umount ${OUT}/old_boot
-    rm ${TARGET_OS}/r.img
-    rm -rf ${OUT}/old_boot
 
-    cp ${KERNEL_BUILD_DIR}/${KIMG} ${OUT}/boot/
-    cp -avf ${KERNEL_BUILD_DIR}/${KDTB} ${OUT}/boot/
-
-    ./build-boot-img.sh ${OUT}/boot ${TARGET_OS}/boot.img
-    if [ $? -eq 0 ]; then
-        echo "update ${KIMG} to boot.img ok."
-        exit 0
-    else
-        echo "fail."
-        exit 1
-    fi
-else 
-	echo "not found ${TARGET_OS}/boot.img"
-	exit 1
+if [ $? -eq 0 ]; then
+    echo "updating kernel ok."
+else
+    echo "failed."
+    exit 1
 fi
-
-# copy kernel modules to rootfs.img
-if [ -f ${TARGET_OS}/rootfs.img ]; then
-    simg2img ${TARGET_OS}/rootfs.img ${TARGET_OS}/r.img
-    mkdir -p ${OUT}/old_rootfs
-    mount -t ext4 -o loop ${TARGET_OS}/r.img ${OUT}/old_rootfs
-    mkdir -p ${OUT}/rootfs
-    rm -rf ${OUT}/rootfs/*
-    cp -af ${OUT}/old_rootfs/* ${OUT}/rootfs
-    umount ${OUT}/old_rootfs
-    rm ${TARGET_OS}/r.img
-    rm -rf ${OUT}/old_rootfs
-
-    cp -af ${KMODULES_OUTDIR}/lib/firmware/* ${OUT}/rootfs/lib/firmware/
-    rm -rf ${OUT}/rootfs/lib/modules/*
-    cp -af ${KMODULES_OUTDIR}/lib/modules/* ${OUT}/rootfs/lib/modules/
-
-    ./build-rootfs-img.sh ${OUT}/rootfs ${TARGET_OS}/rootfs.img
-    if [ $? -eq 0 ]; then
-        echo "update kernel-modules to rootfs.img ok."
-        exit 0
-    else
-        echo "fail."
-        exit 1
-    fi
-else 
-	echo "not found ${TARGET_OS}/rootfs.img"
-	exit 1
-fi
-
-

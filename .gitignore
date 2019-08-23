@@ -12,6 +12,8 @@
 *.patch
 *~
 *.diff
+/eflasher.tgz
+/eflasher.tgz.hash.md5
 
 #
 # Top-level generic files
@@ -32,6 +34,7 @@
 /debian*-images.tgz*
 /emmc-flasher-images.tgz*
 /lubuntu-desktop-images.tgz*
+/friendlywrt*
 /*.raw*
 
 #

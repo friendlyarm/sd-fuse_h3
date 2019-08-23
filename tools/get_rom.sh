@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eu
 
 # Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
 # (http://www.friendlyarm.com)
@@ -22,25 +23,17 @@
 
 BASE_URL=http://112.124.9.243/dvdfiles
 OPT_URL=http://wiki.friendlyarm.com/download
-BOARD=S5P4418/images-for-eflasher
+BOARD=H3/images-for-eflasher
 
-TARGET=${1,,}
-
-case ${TARGET} in
-android)
-	ROMFILE=android-lollipop-images.tgz;;
-kitkat)
-	ROMFILE=android-kitkat-images.tgz;;
-friendlycore)
-	ROMFILE=friendlycore-images.tgz;;
-lubuntu)
-	ROMFILE=lubuntu-desktop-images.tgz;;
-eflasher)
-	ROMFILE=emmc-flasher-images.tgz;;
+TARGET_OS=${1,,}
+case ${TARGET_OS} in
+friendlycore-xenial_4.14_armhf | friendlywrt_4.14_armhf | eflasher)
+        ;;
 *)
-	echo "Usage: $0 <android|friendlycore|lubuntu|eflasher>"
-	exit 1
+        echo "Error: Unsupported target OS: ${TARGET_OS}"
+        exit 0
 esac
+ROMFILE="${TARGET_OS}.tgz"
 
 #----------------------------------------------------------
 # local functions
@@ -97,7 +90,7 @@ fi
 md5sum -c ${ROMFILE}.hash.md5
 if [[ "$?" != 0 ]]; then
 	echo "Error in downloaded file, please try again, or download it by"
-	echo "bowser or other tools, URL is:"
+	echo "browser or other tools, URL is:"
 	echo "  ${BASE_URL}/${BOARD}/${ROMFILE}"
 	echo "  ${BASE_URL}/${BOARD}/${ROMFILE}.hash.md5"
 	exit 1
@@ -106,10 +99,10 @@ fi
 #----------------------------------------------------------
 # extract
 
-mkdir -p ${TARGET}
+mkdir -p ${TARGET_OS}
 
 if [ -f ${ROMFILE} ]; then
-	XOPTS="-C ${TARGET} --strip-components=1"
+	XOPTS="-C ${TARGET_OS} --strip-components=1"
 	FA_DoExec tar xzvf ${ROMFILE} ${XOPTS} || exit 1
 fi
 

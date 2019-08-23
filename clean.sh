@@ -1,4 +1,2 @@
 #!/bin/bash
-
-rm -rf out
-git checkout out
+sudo su -c "rm -rf out/*"

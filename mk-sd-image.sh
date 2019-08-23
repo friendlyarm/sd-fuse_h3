@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eu
 
 # Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
 # (http://www.friendlyarm.com)
@@ -17,6 +18,30 @@
 # along with this program; if not, you can access it online at
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
+function usage() {
+       echo "Usage: $0 <friendlycore-xenial_4.14_armhf|friendlywrt_4.14_armhf|eflasher>"
+       exit 0
+}
+
+if [ $# -eq 0 ]; then
+	usage
+fi
+
+# ----------------------------------------------------------
+# Get platform, target OS
+
+true ${SOC:=h3}
+true ${TARGET_OS:=${1,,}}
+
+case ${TARGET_OS} in
+friendlycore-xenial_4.14_armhf | friendlywrt_4.14_armhf | eflasher)
+        ;;
+*)
+        echo "Error: Unsupported target OS: ${TARGET_OS}"
+        exit 0
+esac
+
+
 # Automatically re-run script under sudo if not root
 if [ $(id -u) -ne 0 ]; then
 	echo "Re-running script under sudo..."
@@ -24,52 +49,30 @@ if [ $(id -u) -ne 0 ]; then
 	exit
 fi
 
-function usage() {
-       echo "Usage: $0 <friendlycore|lubuntu|android|kitkat|eflasher>"
-       exit 0
-}
 
-if [ -z $1 ]; then
-    usage
-fi
-
-# ----------------------------------------------------------
-# Get platform, target OS
-
-true ${SOC:=s5p4418}
-true ${TARGET_OS:=${1,,}}
-
-case ${TARGET_OS} in
-friendlycore* | lubuntu* | android | kitkat | eflasher)
-	;;
-*)
-	echo "Error: Unsupported target OS: ${TARGET_OS}"
-	exit 0
-esac
 
 # ----------------------------------------------------------
 # Create zero file
 
-case ${TARGET_OS} in
-friendlycore)
-	RAW_FILE=${SOC}-friendly-core-xenial-4.4-armhf-$(date +%Y%m%d).img
-	RAW_SIZE_MB=7800 ;;
-lubuntu)
-	RAW_FILE=${SOC}-lubuntu-desktop-xenial-4.4-armhf-$(date +%Y%m%d).img
-	RAW_SIZE_MB=7800 ;;
-android)
-	RAW_FILE=${SOC}-android-lollipop-$(date +%Y%m%d).img
-	RAW_SIZE_MB=7800 ;;
-kitkat)
-	RAW_FILE=${SOC}-android-kitkat-$(date +%Y%m%d).img
-	RAW_SIZE_MB=7800 ;;
-eflasher)
-	RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img
-	RAW_SIZE_MB=7800 ;;
-*)
-	RAW_FILE=${SOC}-${TARGET_OS}-sd4g-$(date +%Y%m%d).img
-	RAW_SIZE_MB=7800 ;;
-esac
+if [ $# -eq 2 ]; then
+	RAW_FILE=$2
+	RAW_SIZE_MB=7800
+else
+	case ${TARGET_OS} in
+	friendlycore-xenial_4.14_armhf)
+		RAW_FILE=${SOC}_sd_friendlycore-xenial_4.14_armhf-$(date +%Y%m%d).img
+		RAW_SIZE_MB=7800 ;;
+	friendlywrt_4.14_armhf)
+		RAW_FILE=${SOC}_sd_friendlywrt_4.14_armhf-$(date +%Y%m%d).img
+		RAW_SIZE_MB=7800 ;;
+	eflasher)
+		RAW_FILE=${SOC}_eflasher-$(date +%Y%m%d).img
+		RAW_SIZE_MB=7800 ;;
+	*)
+		RAW_FILE=${SOC}_sd_${TARGET_OS}-$(date +%Y%m%d).img
+		RAW_SIZE_MB=7800 ;;
+	esac
+fi
 
 OUT=out
 if [ ! -d $OUT ]; then
@@ -97,7 +100,7 @@ sfdisk -u S -L -q ${RAW_FILE} 2>/dev/null << EOF
 EOF
 
 if [ $? -ne 0 ]; then
-	echo "Error: ${RAW_FILE}: Create RAW file failed"
+	echo "Error: ${RAW_FILE}: Creating RAW file failed"
 	exit 1
 fi
 
@@ -113,7 +116,7 @@ if losetup ${LOOP_DEVICE} ${RAW_FILE}; then
 	PART_DEVICE=/dev/mapper/`basename ${LOOP_DEVICE}`
 	sleep 1
 else
-	echo "Error: attach ${LOOP_DEVICE} failed, stop now."
+	echo "Error: attaching ${LOOP_DEVICE} failed, stop now."
 	rm ${RAW_FILE}
 	exit 1
 fi
