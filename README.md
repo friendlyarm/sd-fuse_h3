@@ -25,7 +25,7 @@ fusing.sh will check the local directory for a directory with the same name as O
 So you can download from the netdisk in advance, on netdisk, the images files are stored in a directory called images-for-eflasher, for example:
 ```
 cd sd-fuse_h3
-tar xvzf ../images-for-eflasher/friendlycore-xenial_3.4_armhf.tgz
+tar xvzf ../images-for-eflasher/friendlycore-xenial_4.14_armhf.tgz
 sudo ./fusing.sh /dev/sdX friendlycore-xenial_4.14_armhf
 ```
 
@@ -34,8 +34,8 @@ First, download and unpack:
 ```
 git clone https://github.com/friendlyarm/sd-fuse_h3.git
 cd sd-fuse_h3
-wget http://112.124.9.243/dvdfiles/H3/images-for-eflasher/friendlycore-xenial_3.4_armhf.tgz
-tar xvzf friendlycore-xenial_3.4_armhf.tgz
+wget http://112.124.9.243/dvdfiles/H3/images-for-eflasher/friendlycore-xenial_4.14_armhf.tgz
+tar xvzf friendlycore-xenial_4.14_armhf.tgz
 ```
 Now,  Change something under the friendlycore-xenial_4.14_armhf directory, 
 for example, replace the file you compiled, then build friendlycore-xenial_4.14_armhf bootable SD card: 
@@ -96,8 +96,8 @@ sudo tar xf prebuilts/gcc-x64/arm-cortexa9-linux-gnueabihf-4.9.3.tar.xz -C /opt/
 Download image files:
 ```
 cd sd-fuse_h3
-wget http://112.124.9.243/dvdfiles/H3/images-for-eflasher/friendlycore-xenial_3.4_armhf.tgz
-tar xzf friendlycore-xenial_3.4_armhf.tgz
+wget http://112.124.9.243/dvdfiles/H3/images-for-eflasher/friendlycore-xenial_4.14_armhf.tgz
+tar xzf friendlycore-xenial_4.14_armhf.tgz
 ```
 Build kernel:
 ```
