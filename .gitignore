@@ -5,7 +5,10 @@
 #
 # Normal rules
 #
-
+.*.swp
+rootfs_*.tgz
+/test/out
+/test/tmp
 /out
 *.rej
 *.orig

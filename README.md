@@ -111,12 +111,19 @@ cd sd-fuse_h3
 ```
 
 ### Custom rootfs for FriendlyCore
-Use FriendlyCore as an example, extract rootfs from rootfs.img:
+Use FriendlyCore as an example:
 ```
 git clone https://github.com/friendlyarm/sd-fuse_h3.git
 cd sd-fuse_h3
-wget http://112.124.9.243/dvdfiles/H3/rootfs/rootfs-friendlycore-xenial_4.14_armhf-YYMMDD.tgz
-tar xzf rootfs-friendlycore-xenial_4.14_armhf-YYMMDD.tgz
+wget http://112.124.9.243/dvdfiles/H3/images-for-eflasher/friendlycore-xenial_4.14_armhf.tgz
+tar xzf friendlycore-xenial_4.14_armhf.tgz
+wget http://112.124.9.243/dvdfiles/H3/images-for-eflasher/eflasher.tgz
+tar xzf eflasher.tgz
+```
+Download rootfs package:
+```
+wget http://112.124.9.243/dvdfiles/H3/rootfs/rootfs_friendlycore_4.14.tgz
+tar xzf rootfs_friendlycore_4.14.tgz -C friendlycore-xenial_4.14_armhf
 ```
 Now,  change something under rootfs directory, like this:
 ```

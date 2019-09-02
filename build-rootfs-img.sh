@@ -61,6 +61,11 @@ else
      fi
 fi
 
+if [ ${TARGET_OS} != "eflasher" ]; then
+    echo "IMG_SIZE=${IMG_SIZE}" > ${OUT}/${TARGET_OS}_rootfs-img.info
+    ${TOP}/tools/generate-partmap-txt.sh ${OUT} ${TARGET_OS} ${PREBUILT}
+fi
+
 echo "generating ${IMG_FILE} done."
 echo 0
 
