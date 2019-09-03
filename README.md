@@ -131,7 +131,7 @@ echo hello > friendlycore-xenial_4.14_armhf/rootfs/root/welcome.txt
 ```
 Remake rootfs.img:
 ```
-./build-rootfs-img.sh friendlycore-xenial_4.14_armhf/rootfs friendlycore-xenial_4.14_armhf/rootfs.img
+./build-rootfs-img.sh friendlycore-xenial_4.14_armhf/rootfs friendlycore-xenial_4.14_armhf
 ```
 Make sdboot image:
 ```

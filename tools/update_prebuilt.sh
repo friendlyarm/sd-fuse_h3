@@ -6,8 +6,6 @@ set -eu
 	exit 1
 }
 
-cp -f $2/partmap.txt $1/
-
 USERDATA_SIZE=104857600
 echo "Generating empty userdata.img (size:${USERDATA_SIZE})"
 TMPDIR=`mktemp -d`

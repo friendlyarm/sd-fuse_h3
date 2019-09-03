@@ -18,6 +18,9 @@ tar xzf eflasher.tgz
 wget http://${HTTP_SERVER}/dvdfiles/H3/rootfs/rootfs_friendlycore_4.14.tgz
 tar xzf rootfs_friendlycore_4.14.tgz -C friendlycore-xenial_4.14_armhf
 echo hello > friendlycore-xenial_4.14_armhf/rootfs/root/welcome.txt
-./build-rootfs-img.sh friendlycore-xenial_4.14_armhf/rootfs friendlycore-xenial_4.14_armhf/rootfs.img
+(cd friendlycore-xenial_4.14_armhf/rootfs/root/ && {
+	wget http://${HTTP_SERVER}/dvdfiles/H3/images-for-eflasher/friendlycore-xenial_4.14_armhf.tgz -O deleteme.tgz
+});
+./build-rootfs-img.sh friendlycore-xenial_4.14_armhf/rootfs friendlycore-xenial_4.14_armhf
 sudo ./mk-sd-image.sh friendlycore-xenial_4.14_armhf
 sudo ./mk-emmc-image.sh friendlycore-xenial_4.14_armhf

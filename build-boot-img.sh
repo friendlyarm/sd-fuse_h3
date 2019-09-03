@@ -26,7 +26,7 @@ if [ $(id -u) -ne 0 ]; then
 fi
 
 #64M
-RAW_SIZE_MB=$(( `grep "boot.img" $TOPDIR/prebuilt/partmap.txt | cut -f 4 -d":" | cut -f 2 -d","`/1024/1024 ))
+RAW_SIZE_MB=$(( `grep "boot.img" $TOPDIR/prebuilt/partmap.template | cut -f 4 -d":" | cut -f 2 -d","`/1024/1024 ))
 if [ -n "$RAW_SIZE_MB" ] && [ "$RAW_SIZE_MB" -eq "$RAW_SIZE_MB" ] 2>/dev/null; then
     echo ""
 else
