@@ -6,13 +6,6 @@ set -eu
 	exit 1
 }
 
-# Automatically re-run script under sudo if not root
-if [ $(id -u) -ne 0 ]; then
-        echo "Re-running script under sudo..."
-        sudo "$0" "$@"
-        exit
-fi
-
 true ${SOC:=h3}
 ARCH=arm
 KIMG=arch/${ARCH}/boot/zImage
@@ -33,15 +26,17 @@ rsync -a --no-o --no-g ${KERNEL_DIR}/${KDTB} ${BOOT_DIR}
 rsync -a --no-o --no-g ${PREBUILT}/boot/* ${BOOT_DIR}
 
 # rootfs
-cp -af ${KMODULES_OUTDIR}/* ${ROOTFS_DIR}
+rm -rf ${ROOTFS_DIR}/lib/modules/*
+cp -af ${KMODULES_OUTDIR}/* ${ROOTFS_DIR}/
 
 # 3rd drives
 if [ ! -z "$PREBUILT" ]; then
     if [ -d ${ROOTFS_DIR}/lib/modules/4.14.111 ]; then
         cp -af ${PREBUILT}/kernel-module/4.14.111/* ${ROOTFS_DIR}/lib/modules/4.14.111/
     fi
-    if [ -d ${PREBUILT}/firmware ]; then
-        cp -af ${PREBUILT}/firmware/* ${ROOTFS_DIR}/lib/firmware/
+    if [ -d ${PREBUILT}/wifi_firmware ]; then
+        cp -rd ${PREBUILT}/wifi_firmware/wifi/lib/firmware/xr819 ${ROOTFS_DIR}/lib/firmware
+        cp -rd ${PREBUILT}/wifi_firmware/ap6xxx/lib/firmware/* ${ROOTFS_DIR}/lib/firmware
     fi
 fi
 
