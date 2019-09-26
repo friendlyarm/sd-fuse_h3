@@ -90,8 +90,9 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
         if [ -d ${OUT}/rootfs_new/lib/modules/4.14.111 ]; then
             cp -af ${PREBUILT}/kernel-module/4.14.111/* ${OUT}/rootfs_new/lib/modules/4.14.111/
         fi
-        mkdir -p ${PREBUILT}/firmware
-        cp -af ${PREBUILT}/firmware/* ${OUT}/rootfs_new/lib/firmware/
+	if [ -d ${PREBUILT}/wifi_firmware ]; then
+        	cp -af ${PREBUILT}/wifi_firmware/* ${OUT}/rootfs_new/lib/firmware/
+	fi
     fi
 
     # Make rootfs.img
