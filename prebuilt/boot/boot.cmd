@@ -19,9 +19,6 @@ setenv ramdisk_size ${filesize}
 fatload mmc 0 ${dtb_addr} sun8i-${cpu}-${board}.dtb
 fdt addr ${dtb_addr}
 
-# setup MAC address 
-fdt set ethernet0 local-mac-address ${mac_node}
-
 # setup XR819 MAC address
 if test $board = nanopi-duo; then fdt set xr819 local-mac-address ${wifi_mac_node}; fi
 
