@@ -26,14 +26,11 @@ OPT_URL=http://wiki.friendlyarm.com/download
 BOARD=H3/images-for-eflasher
 
 TARGET_OS=${1,,}
-case ${TARGET_OS} in
-friendlycore-xenial_4.14_armhf | friendlywrt_4.14_armhf | eflasher)
-        ;;
-*)
-        echo "Error: Unsupported target OS: ${TARGET_OS}"
-        exit 0
-esac
-ROMFILE="${TARGET_OS}.tgz"
+ROMFILE=`./tools/get_pkg_filename.sh ${TARGET_OS}`
+if [ -z ${ROMFILE} ]; then
+	echo "Error: Unsupported target OS: ${TARGET_OS}"
+        exit 1
+fi
 
 #----------------------------------------------------------
 # local functions
