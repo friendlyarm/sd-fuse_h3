@@ -19,7 +19,7 @@ true ${MKFS:="${TOP}/tools/make_ext4fs"}
 
 true ${SOC:=h3}
 ARCH=arm
-KCFG=sunxi_defconfig
+true ${KCFG:=sunxi_defconfig}
 KIMG=arch/${ARCH}/boot/zImage
 KDTB=arch/${ARCH}/boot/dts/sun8i-*-nanopi-*.dtb
 KALL="zImage dtbs"

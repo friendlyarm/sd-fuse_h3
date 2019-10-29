@@ -25,7 +25,7 @@ KERNEL_REPO=https://github.com/friendlyarm/linux
 KERNEL_BRANCH=sunxi-4.14.y
 
 ARCH=arm
-KCFG=sunxi_defconfig
+true ${KCFG:=sunxi_defconfig}
 KIMG=arch/${ARCH}/boot/zImage
 KDTB=arch/${ARCH}/boot/dts/sun8i-*-nanopi-*.dtb
 KALL="zImage dtbs"
@@ -169,7 +169,7 @@ fi
 
 cd ${TOPPATH}
 download_img ${TARGET_OS}
-./tools/update_kernel_bin_to_img.sh ${OUT} ${KERNEL_SRC} ${TARGET_OS} ${TOPPATH}/prebuilt
+KCFG=${KCFG} ./tools/update_kernel_bin_to_img.sh ${OUT} ${KERNEL_SRC} ${TARGET_OS} ${TOPPATH}/prebuilt
 
 
 if [ $? -eq 0 ]; then
