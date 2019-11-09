@@ -15,8 +15,6 @@ rootfs_*.tgz
 *.patch
 *~
 *.diff
-/eflasher.tgz
-/eflasher.tgz.hash.md5
 
 #
 # Top-level generic files
@@ -31,13 +29,14 @@ rootfs_*.tgz
 /kitkat
 /lubuntu*
 /friendlycore*
-/android*-images.tgz*
-/core-qte-images.tgz*
-/friendlycore-arm64-images.tgz*
-/debian*-images.tgz*
-/emmc-flasher-images.tgz*
-/lubuntu-desktop-images.tgz*
 /friendlywrt*
+/android*.tgz*
+/core-qte.tgz*
+/friendlycore*.tgz*
+/debian*.tgz*
+/eflasher.tgz*
+/lubuntu-desktop-images.tgz*
+/friendlywrt*.tgz
 /*.raw*
 
 #
