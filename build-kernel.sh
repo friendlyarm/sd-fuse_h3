@@ -117,9 +117,10 @@ fi
 
 if [ ! -d /opt/FriendlyARM/toolchain/4.9.3 ]; then
 	echo "please install arm-linux-gcc 4.9.3 first, using these commands: "
-	echo "\tgit clone https://github.com/friendlyarm/prebuilts.git"
-	echo "\tsudo mkdir -p /opt/FriendlyARM/toolchain"
-	echo "\tsudo tar xf prebuilts/gcc-x64/arm-cortexa9-linux-gnueabihf-4.9.3.tar.xz -C /opt/FriendlyARM/toolchain/"
+	echo -e "\tgit clone https://github.com/friendlyarm/prebuilts.git"
+	echo -e "\tsudo mkdir -p /opt/FriendlyARM/toolchain"
+	echo -e "\tsudo cat prebuilts/gcc-x64/toolchain-4.9.3-armhf.tar.gza* >prebuilts/gcc-x64/toolchain-4.9.3-armhf.tar.gz"
+	echo -e "\tsudo tar xf prebuilts/gcc-x64/toolchain-4.9.3-armhf.tar.gz -C /"
 	exit 1
 fi
 export PATH=/opt/FriendlyARM/toolchain/4.9.3/bin/:$PATH
