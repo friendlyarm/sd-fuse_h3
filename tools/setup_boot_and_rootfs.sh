@@ -10,6 +10,7 @@ true ${SOC:=h3}
 ARCH=arm
 KIMG=arch/${ARCH}/boot/zImage
 KDTB=arch/${ARCH}/boot/dts/sun8i-*-nanopi-*.dtb
+KOVERLAY=arch/${ARCH}/boot/dts/overlays
 OUT=${PWD}/out
 
 UBOOT_DIR=$1
@@ -24,6 +25,11 @@ KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 rsync -a --no-o --no-g ${KERNEL_DIR}/${KIMG} ${BOOT_DIR}
 rsync -a --no-o --no-g ${KERNEL_DIR}/${KDTB} ${BOOT_DIR}
 rsync -a --no-o --no-g ${PREBUILT}/boot/* ${BOOT_DIR}
+
+mkdir -p ${BOOT_DIR}/overlays
+rsync -a --no-o --no-g ${KERNEL_DIR}/${KOVERLAY}/*.dtbo ${BOOT_DIR}/overlays/
+rsync -a --no-o --no-g ${KERNEL_DIR}/${KOVERLAY}/sun8i-h3-fixup* ${BOOT_DIR}/overlays/
+rsync -a --no-o --no-g ${KERNEL_DIR}/${KOVERLAY}/README.sun8i-h3-overlays ${BOOT_DIR}/overlays/README.md
 
 # rootfs
 rm -rf ${ROOTFS_DIR}/lib/modules/*

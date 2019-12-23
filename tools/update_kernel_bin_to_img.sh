@@ -40,12 +40,13 @@ KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 if [ -f ${TARGET_OS}/boot.img ]; then
     echo "copying kernel to boot.img ..."
     mkdir -p ${OUT}/boot_mnt
-    mkdir -p ${OUT}/boot_mnt/overlays
     mount -o loop ${TARGET_OS}/boot.img ${OUT}/boot_mnt
     RET=$?
 
     rsync -a --no-o --no-g ${KERNEL_BUILD_DIR}/${KIMG} ${OUT}/boot_mnt/
     rsync -a --no-o --no-g ${KERNEL_BUILD_DIR}/${KDTB} ${OUT}/boot_mnt/
+
+    mkdir -p ${OUT}/boot_mnt/overlays
     rsync -a --no-o --no-g ${KERNEL_BUILD_DIR}/${KOVERLAY}/*.dtbo ${OUT}/boot_mnt/overlays
     rsync -a --no-o --no-g ${KERNEL_BUILD_DIR}/${KOVERLAY}/sun8i-h3-fixup* ${OUT}/boot_mnt/overlays/
     rsync -a --no-o --no-g ${KERNEL_BUILD_DIR}/${KOVERLAY}/README.sun8i-h3-overlays ${OUT}/boot_mnt/overlays/README.md
