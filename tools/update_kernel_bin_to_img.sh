@@ -21,7 +21,8 @@ true ${SOC:=h3}
 ARCH=arm
 true ${KCFG:=sunxi_defconfig}
 KIMG=arch/${ARCH}/boot/zImage
-KDTB=arch/${ARCH}/boot/dts/sun8i-*-nanopi-*.dtb
+KDTB_NANOPI=arch/${ARCH}/boot/dts/sun8i-*-nanopi-*.dtb
+KDTB_ZEROPI=arch/${ARCH}/boot/dts/sun8i-h3-zeropi.dtb
 KOVERLAY=arch/${ARCH}/boot/dts/overlays
 KALL="zImage dtbs"
 CROSS_COMPILER=arm-linux-
@@ -44,7 +45,8 @@ if [ -f ${TARGET_OS}/boot.img ]; then
     RET=$?
 
     rsync -a --no-o --no-g ${KERNEL_BUILD_DIR}/${KIMG} ${OUT}/boot_mnt/
-    rsync -a --no-o --no-g ${KERNEL_BUILD_DIR}/${KDTB} ${OUT}/boot_mnt/
+    rsync -a --no-o --no-g ${KERNEL_BUILD_DIR}/${KDTB_NANOPI} ${OUT}/boot_mnt/
+    rsync -a --no-o --no-g ${KERNEL_BUILD_DIR}/${KDTB_ZEROPI} ${OUT}/boot_mnt/
 
     mkdir -p ${OUT}/boot_mnt/overlays
     rsync -a --no-o --no-g ${KERNEL_BUILD_DIR}/${KOVERLAY}/*.dtbo ${OUT}/boot_mnt/overlays

@@ -9,7 +9,8 @@ set -eu
 true ${SOC:=h3}
 ARCH=arm
 KIMG=arch/${ARCH}/boot/zImage
-KDTB=arch/${ARCH}/boot/dts/sun8i-*-nanopi-*.dtb
+KDTB_NANOPI=arch/${ARCH}/boot/dts/sun8i-*-nanopi-*.dtb
+KDTB_ZEROPI=arch/${ARCH}/boot/dts/sun8i-h3-zeropi.dtb
 KOVERLAY=arch/${ARCH}/boot/dts/overlays
 OUT=${PWD}/out
 
@@ -23,7 +24,8 @@ KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 
 # boot
 rsync -a --no-o --no-g ${KERNEL_DIR}/${KIMG} ${BOOT_DIR}
-rsync -a --no-o --no-g ${KERNEL_DIR}/${KDTB} ${BOOT_DIR}
+rsync -a --no-o --no-g ${KERNEL_DIR}/${KDTB_NANOPI} ${BOOT_DIR}
+rsync -a --no-o --no-g ${KERNEL_DIR}/${KDTB_ZEROPI} ${BOOT_DIR}
 rsync -a --no-o --no-g ${PREBUILT}/boot/* ${BOOT_DIR}
 
 mkdir -p ${BOOT_DIR}/overlays
