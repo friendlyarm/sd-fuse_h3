@@ -24,12 +24,16 @@ true ${DISABLE_MKIMG:=0}
 KERNEL_REPO=https://github.com/friendlyarm/linux
 KERNEL_BRANCH=sunxi-4.14.y
 
+declare -a KERNEL_3RD_DRIVERS=()
+declare -a KERNEL_3RD_DRIVER_BRANCHES=()
+declare -a KERNEL_3RD_DRIVER_NAME=()
+
 ARCH=arm
 true ${KCFG:=sunxi_defconfig}
 KIMG=arch/${ARCH}/boot/zImage
 KDTB=arch/${ARCH}/boot/dts/sun8i-*-nanopi-*.dtb
 KALL="zImage dtbs"
-CROSS_COMPILER=arm-linux-
+CROSS_COMPILE=arm-linux-
 
 # 
 # kernel logo:
@@ -133,7 +137,7 @@ if [ $? -ne 0 ]; then
 	echo "failed to build kernel."
 	exit 1
 fi
-make ARCH=${ARCH} ${KALL} CROSS_COMPILE=${CROSS_COMPILER} -j$(nproc)
+make ARCH=${ARCH} ${KALL} CROSS_COMPILE=${CROSS_COMPILE} -j$(nproc)
 if [ $? -ne 0 ]; then
         echo "failed to build kernel."
         exit 1
@@ -141,17 +145,53 @@ fi
 
 rm -rf ${KMODULES_OUTDIR}
 mkdir -p ${KMODULES_OUTDIR}
-make ARCH=${ARCH} INSTALL_MOD_PATH=${KMODULES_OUTDIR} modules -j$(nproc) CROSS_COMPILE=${CROSS_COMPILER}
+make ARCH=${ARCH} INSTALL_MOD_PATH=${KMODULES_OUTDIR} modules -j$(nproc) CROSS_COMPILE=${CROSS_COMPILE}
 if [ $? -ne 0 ]; then
 	echo "failed to build kernel modules."
         exit 1
 fi
-make ARCH=${ARCH} INSTALL_MOD_PATH=${KMODULES_OUTDIR} modules_install CROSS_COMPILE=${CROSS_COMPILER}
+make ARCH=${ARCH} INSTALL_MOD_PATH=${KMODULES_OUTDIR} modules_install CROSS_COMPILE=${CROSS_COMPILE}
 if [ $? -ne 0 ]; then
 	echo "failed to build kernel modules."
         exit 1
 fi
-(cd ${KMODULES_OUTDIR} && find . -name \*.ko | xargs ${CROSS_COMPILER}strip --strip-unneeded)
+
+KERNEL_VER=`make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} kernelrelease`
+for (( i=0; i<${#KERNEL_3RD_DRIVERS[@]}; i++ ));
+do
+    (cd ${OUT} && {
+        if [ ! -d ${KERNEL_3RD_DRIVER_NAME[$i]} ]; then
+            git clone ${KERNEL_3RD_DRIVERS[$i]} -b ${KERNEL_3RD_DRIVER_BRANCHES[$i]} ${KERNEL_3RD_DRIVER_NAME[$i]}
+        else
+            (cd ${KERNEL_3RD_DRIVER_NAME[$i]} && {
+                make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} KSRC=${KERNEL_SRC} CONFIG_VENDOR_FRIENDLYARM=y clean
+            })
+        fi
+        (cd ${KERNEL_3RD_DRIVER_NAME[$i]} && {
+            make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} KSRC=${KERNEL_SRC} CONFIG_VENDOR_FRIENDLYARM=y -j$(nproc)
+            if [ $? -ne 0 ]; then
+                echo "failed to build 3rd kernel modules: ${KERNEL_3RD_DRIVER_NAME[$i]}"
+                exit 1
+            fi
+            ${CROSS_COMPILE}strip --strip-unneeded ${KERNEL_3RD_DRIVER_NAME[$i]}.ko
+            cp ${KERNEL_3RD_DRIVER_NAME[$i]}.ko ${KMODULES_OUTDIR}/lib/modules/${KERNEL_VER} -afv
+        })
+    })
+done
+
+# wireguard
+(cd ${OUT} && {
+    if [ ! -d wireguard ]; then
+        git clone https://git.zx2c4.com/wireguard-linux-compat -b master wireguard
+        # old version# git clone https://git.zx2c4.com/wireguard-monolithic-historical -b master wireguard
+    fi
+    (cd wireguard/src && {
+        make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} KERNELDIR=${KERNEL_SRC}
+        cp wireguard.ko ${KMODULES_OUTDIR}/lib/modules/${KERNEL_VER} -afv
+    })
+})
+
+(cd ${KMODULES_OUTDIR} && find . -name \*.ko | xargs ${CROSS_COMPILE}strip --strip-unneeded)
 
 if [ ! -d ${KMODULES_OUTDIR}/lib ]; then
 	echo "not found kernel modules."
