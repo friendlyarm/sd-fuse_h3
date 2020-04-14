@@ -191,6 +191,22 @@ done
     })
 })
 
+# exfat-nofuse
+case ${TARGET_OS} in
+friendlywrt_4.14_armhf)
+    if [ ! -d exfat-nofuse ]; then
+        git clone https://github.com/dorimanx/exfat-nofuse.git -b master exfat-nofuse
+    fi
+    (cd exfat-nofuse && {
+        make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} KSRC=${KERNEL_SRC} KDIR=${KERNEL_SRC}
+        cp exfat.ko ${KMODULES_OUTDIR}/lib/modules/${KERNEL_VER} -afv
+    })
+    ;;
+*)
+    echo "skip exfat-nofuse"
+    ;;
+esac
+
 (cd ${KMODULES_OUTDIR} && find . -name \*.ko | xargs ${CROSS_COMPILE}strip --strip-unneeded)
 
 if [ ! -d ${KMODULES_OUTDIR}/lib ]; then
