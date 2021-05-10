@@ -18,9 +18,17 @@ git clone ../../.git sd-fuse_h3
 cd sd-fuse_h3
 wget http://${HTTP_SERVER}/dvdfiles/H3/images-for-eflasher/friendlycore-xenial_4.14_armhf.tgz
 tar xzf friendlycore-xenial_4.14_armhf.tgz
+wget http://${HTTP_SERVER}/dvdfiles/H3/images-for-eflasher/eflasher.tgz
+tar xzf eflasher.tgz
 
-# git clone https://github.com/friendlyarm/linux -b sunxi-4.14.y --depth 1 kernel-h3
-git clone git@192.168.1.5:/allwinner/linux-sunxi.git --depth 1 -b sunxi-4.14.y-devel kernel-h3
+# make big file
+fallocate -l 5G friendlycore-xenial_4.14_armhf/rootfs.img
 
-KERNEL_SRC=$PWD/kernel-h3 ./build-kernel.sh friendlycore-xenial_4.14_armhf
+# calc image size
+IMG_SIZE=`du -s -B 1 friendlycore-xenial_4.14_armhf/rootfs.img | cut -f1`
+
+# re-gen parameter.txt
+./tools/generate-partmap-txt.sh ${IMG_SIZE} friendlycore-xenial_4.14_armhf h3
+
 sudo ./mk-sd-image.sh friendlycore-xenial_4.14_armhf
+sudo ./mk-emmc-image.sh friendlycore-xenial_4.14_armhf

@@ -9,12 +9,15 @@
 rootfs_*.tgz
 /test/out
 /test/tmp
+/test/*.tgz
 /out
 *.rej
 *.orig
 *.patch
 *~
 *.diff
+*.deb
+*.changes
 
 #
 # Top-level generic files
