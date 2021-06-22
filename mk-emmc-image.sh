@@ -18,7 +18,7 @@
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
 function usage() {
-       echo "Usage: $0 <friendlycore-xenial_4.14_armhf|friendlywrt_4.14_armhf>"
+       echo "Usage: $0 <friendlycore-focal_4.14_armhf|friendlycore-xenial_4.14_armhf|friendlywrt_4.14_armhf>"
        exit 0
 }
 
@@ -33,7 +33,7 @@ true ${SOC:=h3}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-friendlycore-xenial_4.14_armhf | friendlywrt_4.14_armhf)
+friendlycore-focal_4.14_armhf | friendlycore-xenial_4.14_armhf | friendlywrt_4.14_armhf)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"

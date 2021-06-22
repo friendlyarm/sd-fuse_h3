@@ -1,5 +1,6 @@
 #!/bin/bash
 set -eu
+set -x
 
 [ -f ${PWD}/mk-emmc-image.sh ] || {
 	echo "Error: please run at the script's home dir"
@@ -89,17 +90,28 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
     rm -rf ${OUT}/rootfs_mnt
     rm -f ${TARGET_OS}/r.img
 
+
+    ROOTFS_LIB=`readlink -f ${OUT}/rootfs_new/lib`
+
     # Processing rootfs_new
     # 注意这里不删除旧的文件，防止删除一些额外安装的模块
-    cp -af ${KMODULES_OUTDIR}/* ${OUT}/rootfs_new/
+    (cd ${KMODULES_OUTDIR}/lib && {
+        tar -cf - * | tar -xf - -p --same-owner --numeric-owner -C ${ROOTFS_LIB}
+    })
 
     # 3rd drives
     if [ ! -z "$PREBUILT" ]; then
-        if [ -d ${OUT}/rootfs_new/lib/modules/4.14.111 ]; then
-            cp -af ${PREBUILT}/kernel-module/4.14.111/* ${OUT}/rootfs_new/lib/modules/4.14.111/
+        if [ -d ${ROOTFS_LIB}/modules/4.14.111 ]; then
+            (cd ${PREBUILT}/kernel-module/4.14.111/ && {
+                tar -cf - * | tar -xf - -p --same-owner --numeric-owner -C ${ROOTFS_LIB}/modules/4.14.111
+            })
         fi
         if [ -d ${PREBUILT}/wifi_firmware ]; then
-        	cp -af ${PREBUILT}/wifi_firmware/* ${OUT}/rootfs_new/lib/firmware/
+            (cd ${PREBUILT}/wifi_firmware/ && {
+                FIRMWARE_PATH=${ROOTFS_LIB}/firmware
+                [ -d ${FIRMWARE_PATH} ] || mkdir ${FIRMWARE_PATH}
+                tar -cf - * | tar -xf - -p --same-owner --numeric-owner -C ${FIRMWARE_PATH}
+            })
         fi
 	fi
     MKFS_OPTS="-s -a root -L rootfs"

@@ -38,6 +38,8 @@ if [ $# -eq 4 ]; then
 	RAW_FILE=$4
 else
 	case ${TARGET_OS} in
+	friendlycore-focal_4.14_armhf)
+		RAW_FILE=${SOC}_eflasher_friendlycore-focal_4.14_armhf-$(date +%Y%m%d).img ;;
 	friendlycore-xenial_4.14_armhf)
 		RAW_FILE=${SOC}_eflasher_friendlycore-xenial_4.14_armhf-$(date +%Y%m%d).img ;;
 	friendlywrt_4.14_armhf)
@@ -51,7 +53,7 @@ fi
 
 gen_eflasher_conf()
 {
-	OSNamesMergeWithComma="friendlywrt_4.14_armhf,friendlycore-xenial_4.14_armhf"
+	OSNamesMergeWithComma="friendlywrt_4.14_armhf,friendlycore-xenial_4.14_armhf,friendlycore-focal_4.14_armhf"
 	cat > ${1}/eflasher.conf <<EOL
 ; This is the eFlasher configuration file.
 ; See http://wiki.friendlyarm.com/wiki/index.php/EFlasher for detailed information.

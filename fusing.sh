@@ -22,7 +22,7 @@ set -eu
 # Checking device for fusing
 
 if [ $# -eq 0 ]; then
-	echo "Usage: $0 DEVICE <friendlycore-xenial_4.14_armhf | friendlywrt_4.14_armhf | eflasher>"
+	echo "Usage: $0 DEVICE <friendlycore-focal_4.14_armhf | friendlycore-xenial_4.14_armhf | friendlywrt_4.14_armhf | eflasher>"
 	exit 0
 fi
 
@@ -76,7 +76,7 @@ true ${TARGET_OS:=${2,,}}
 PARTMAP=./${TARGET_OS}/partmap.txt
 
 case ${TARGET_OS} in
-friendlycore-xenial_4.14_armhf | friendlywrt_4.14_armhf | eflasher)
+friendlycore-focal_4.14_armhf | friendlycore-xenial_4.14_armhf | friendlywrt_4.14_armhf | eflasher)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
