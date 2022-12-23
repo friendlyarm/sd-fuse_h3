@@ -54,7 +54,7 @@ KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 true ${KERNEL_SRC:=${OUT}/kernel-${SOC}}
 
 function usage() {
-       echo "Usage: $0 <friendlycore-focal_4.14_armhf|friendlycore-xenial_4.14_armhf|friendlywrt_4.14_armhf|eflasher>"
+       echo "Usage: $0 <friendlycore-focal_4.14_armhf|debian-jessie_4.14_armhf|friendlycore-xenial_4.14_armhf|friendlywrt_4.14_armhf|eflasher>"
        echo "# example:"
        echo "# clone kernel source from github:"
        echo "    git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
@@ -78,7 +78,7 @@ true ${TARGET_OS:=${1,,}}
 PARTMAP=./${TARGET_OS}/partmap.txt
 
 case ${TARGET_OS} in
-friendlycore-focal_4.14_armhf | friendlycore-xenial_4.14_armhf | friendlywrt_4.14_armhf | eflasher)
+friendlycore-focal_4.14_armhf | debian-jessie_4.14_armhf | friendlycore-xenial_4.14_armhf | friendlywrt_4.14_armhf | eflasher)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -92,8 +92,8 @@ download_img() {
 Warn: Image not found for ${1}
 ----------------
 you may download it from the netdisk (dl.friendlyarm.com) to get a higher downloading speed,
-the image files are stored in a directory called images-for-eflasher, for example:
-    tar xvzf /path/to/NETDISK/images-for-eflasher/${ROMFILE}
+the image files are stored in a directory called "03_Partition image files", for example:
+    tar xvzf /path/to/NetDrive/03_Partition\ image\ files/${ROMFILE}
 ----------------
 Do you want to download it now via http? (Y/N):
 EOF

@@ -22,7 +22,7 @@ set -eu
 # Checking device for fusing
 
 if [ $# -eq 0 ]; then
-	echo "Usage: $0 DEVICE <friendlycore-focal_4.14_armhf | friendlycore-xenial_4.14_armhf | friendlywrt_4.14_armhf | eflasher>"
+	echo "Usage: $0 DEVICE <friendlycore-focal_4.14_armhf | debian-jessie_4.14_armhf | friendlycore-xenial_4.14_armhf | friendlywrt_4.14_armhf | eflasher>"
 	exit 0
 fi
 
@@ -76,7 +76,7 @@ true ${TARGET_OS:=${2,,}}
 PARTMAP=./${TARGET_OS}/partmap.txt
 
 case ${TARGET_OS} in
-friendlycore-focal_4.14_armhf | friendlycore-xenial_4.14_armhf | friendlywrt_4.14_armhf | eflasher)
+friendlycore-focal_4.14_armhf | debian-jessie_4.14_armhf | friendlycore-xenial_4.14_armhf | friendlywrt_4.14_armhf | eflasher)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -89,8 +89,8 @@ if [[ ! -z ${TARGET_OS} && ! -f ${PARTMAP} ]]; then
 Warn: Image not found for ${TARGET_OS}
 ----------------
 you may download it from the netdisk (dl.friendlyarm.com) to get a higher downloading speed,
-the image files are stored in a directory called images-for-eflasher, for example:
-    tar xvzf /path/to/NETDISK/images-for-eflasher/${ROMFILE}
+the image files are stored in a directory called "03_Partition image files", for example:
+    tar xvzf /path/to/NetDrive/03_Partition\ image\ files/${ROMFILE}
 ----------------
 Do you want to download it now via http? (Y/N):
 EOF
