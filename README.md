@@ -1,144 +1,181 @@
+
 # sd-fuse_h3
-Create bootable SD card for FriendlyELEC series board, NanoPi NEO/NEO Air/M1M1 Plus/NEO Core/Duo2 etc..
+## Introduction
+This repository is a bunch of scripts to build bootable SD card images for FriendlyElec H3 boards, the main features are as follows:
 
-## How to find the /dev name of my SD Card
-Unplug all usb devices:
-```
-ls -1 /dev > ~/before.txt
-```
-plug it in, then
-```
-ls -1 /dev > ~/after.txt
-diff ~/before.txt ~/after.txt
-```
+* Create root ﬁlesystem image from a directory
+* Build bootable SD card image
+* Easy way to compile kernel、uboot and third-party driver
+  
+*Read this in other languages: [简体中文](README_cn.md)*  
+  
+## Requirements
+* Recommended Host OS: Ubuntu 18.04 LTS (Bionic Beaver) 64-bit or Higher
+* It is recommended to run this script to initialize the development environment: https://github.com/friendlyarm/build-env-on-ubuntu-bionic
 
-## Build friendlycore-focal_4.14_armhf bootable SD card
-```
-git clone https://github.com/friendlyarm/sd-fuse_h3.git
-cd sd-fuse_h3
-sudo ./fusing.sh /dev/sdX friendlycore-focal_4.14_armhf
-```
-You can build the following OS: friendlycore-focal_4.14_armhf, friendlycore-xenial_4.14_armhf, friendlywrt_4.14_armhf.  
+## Kernel Version Support
+The sd-fuse use multiple git branches to support each version of the kernel, the current branche supported kernel version is as follows:
+* 4.14.y   
+  
+For other kernel versions, please switch to the related git branch.
+## Target board OS Supported
+*Notes: The OS name is the same as the directory name, it is written in the script so it cannot be renamed.*
 
-Notes:  
-fusing.sh will check the local directory for a directory with the same name as OS, if it does not exist fusing.sh will go to download it from network.  
-So you can download from the netdisk in advance, on netdisk, the images files are stored in a directory called images-for-eflasher, for example:
-```
-cd sd-fuse_h3
-tar xvzf ../images-for-eflasher/friendlycore-focal_4.14_armhf.tgz
-sudo ./fusing.sh /dev/sdX friendlycore-focal_4.14_armhf
-```
+* friendlycore-focal_4.14_armhf
+* friendlycore-xenial_4.14_armhf
+* friendlywrt_4.14_armhf
+* debian-jessie_4.14_armhf
 
-## Build an sd card image
-First, download and unpack:
+  
+To build an SD card image for friendlycore-focal, for example like this:
 ```
-git clone https://github.com/friendlyarm/sd-fuse_h3.git
-cd sd-fuse_h3
-wget http://112.124.9.243/dvdfiles/H3/images-for-eflasher/friendlycore-focal_4.14_armhf.tgz
-tar xvzf friendlycore-focal_4.14_armhf.tgz
-```
-Now,  Change something under the friendlycore-focal_4.14_armhf directory, 
-for example, replace the file you compiled, then build friendlycore-focal_4.14_armhf bootable SD card: 
-```
-sudo ./fusing.sh /dev/sdX friendlycore-focal_4.14_armhf
-```
-or build an sd card image:
-```
-sudo ./mk-sd-image.sh friendlycore-focal_4.14_armhf h3-sd-friendlycore.img
-```
-The following file will be generated:  
-```
-out/h3-sd-friendlycore.img
-```
-You can use dd to burn this file into an sd card:
-```
-sudo dd if=out/h3-sd-friendlycore.img bs=1M of=/dev/sdX
-```
-
-## Build an sdcard-to-emmc image (eflasher rom)
-Enable exFAT file system support on Ubuntu:
-```
-sudo apt-get install exfat-fuse exfat-utils
-```
-Generate the eflasher raw image, and put friendlycore-focal_4.14_armhf image files into eflasher:
-```
-git clone https://github.com/friendlyarm/sd-fuse_h3.git
-cd sd-fuse_h3
-wget http://112.124.9.243/dvdfiles/H3/images-for-eflasher/eflasher.tgz
-tar xzf eflasher.tgz
-sudo ./mk-emmc-image.sh friendlycore-focal_4.14_armhf h3-eflasher-friendlycore.img
-```
-The following file will be generated:  
-```
-out/h3-eflasher-friendlycore.img
-```
-You can use dd to burn this file into an sd card:
-```
-sudo dd if=out/h3-eflasher-friendlycore.img bs=1M of=/dev/sdX
-```
-
-## Replace the file you compiled
-
-### Install cross compiler and tools
-
-Install the package:
-```
-apt install liblz4-tool android-tools-fsutils
-```
-Install Cross Compiler:
-```
-git clone https://github.com/friendlyarm/prebuilts.git
-sudo mkdir -p /opt/FriendlyARM/toolchain
-sudo tar xf prebuilts/gcc-x64/arm-cortexa9-linux-gnueabihf-4.9.3.tar.xz -C /opt/FriendlyARM/toolchain/
-```
-
-### Build U-boot and Kernel for FriendlyCore
-Download image files:
-```
-cd sd-fuse_h3
-wget http://112.124.9.243/dvdfiles/H3/images-for-eflasher/friendlycore-focal_4.14_armhf.tgz
-tar xzf friendlycore-focal_4.14_armhf.tgz
-```
-Build kernel:
-```
-cd sd-fuse_h3
-./build-kernel.sh friendlycore-focal_4.14_armhf
-```
-Build uboot:
-```
-cd sd-fuse_h3
-./build-uboot.sh friendlywrt_4.14_armhf
-```
-
-### Custom rootfs for FriendlyCore
-Use FriendlyCore as an example:
-```
-git clone https://github.com/friendlyarm/sd-fuse_h3.git
-cd sd-fuse_h3
-wget http://112.124.9.243/dvdfiles/H3/images-for-eflasher/friendlycore-focal_4.14_armhf.tgz
-tar xzf friendlycore-focal_4.14_armhf.tgz
-wget http://112.124.9.243/dvdfiles/H3/images-for-eflasher/eflasher.tgz
-tar xzf eflasher.tgz
-```
-Download rootfs package:
-```
-wget http://112.124.9.243/dvdfiles/H3/rootfs/rootfs_friendlycore-focal_4.14.tgz
-tar xzf rootfs_friendlycore-focal_4.14.tgz -C friendlycore-focal_4.14_armhf
-```
-Now,  change something under rootfs directory, like this:
-```
-echo hello > friendlycore-focal_4.14_armhf/rootfs/root/welcome.txt  
-```
-Remake rootfs.img:
-```
-./build-rootfs-img.sh friendlycore-focal_4.14_armhf/rootfs friendlycore-focal_4.14_armhf
-```
-Make sdboot image:
-```
-sudo ./mk-sd-image.sh friendlycore-focal_4.14_armhf
-```
-or make sd-to-emmc image (eflasher rom):
-```
-sudo ./mk-emmc-image.sh friendlycore-focal_4.14_armhf
+./mk-sd-image.sh friendlycore-focal_4.14_armhf
 ```
   
+## Where to download files
+The following files may be required to build SD card image:
+* kernel source code: In the directory "07_Source codes" of [NetDrive](https://download.friendlyelec.com/h3), or download from [Github](https://github.com/friendlyarm/linux), the branch name is sunxi-4.14.y
+* uboot source code: In the directory "07_Source codes" of [NetDrive](https://download.friendlyelec.com/h3), or download from [Github](https://github.com/friendlyarm/u-boot), the branch name is sunxi-v2017.x
+* pre-built partition image: In the directory "03_Partition image files" of [NetDrive](https://download.friendlyelec.com/h3), or download from [HTTP server](http://112.124.9.243/dvdfiles/h3/images-for-eflasher)
+* compressed root file system tar ball: In the directory "06_File systems" of [NetDrive](https://download.friendlyelec.com/h3), or download from [HTTP server](http://112.124.9.243/dvdfiles/h3/rootfs)
+  
+If the files are not prepared in advance, the script will automatically download the required files, but the speed may be slower due to the bandwidth of the http server.
+
+## Script Functions
+* fusing.sh: Flash the image to SD card
+* mk-sd-image.sh: Build SD card image
+* mk-emmc-image.sh: Build SD-to-eMMC image, used to install system to eMMC
+
+* build-boot-img.sh:  Create boot ﬁlesystem image(boot.img) from a directory
+
+* build-rootfs-img.sh: Create root ﬁlesystem image(rootfs.img) from a directory
+* build-kernel.sh: Compile the kernel, or kernel headers
+* build-uboot.sh: Compile uboot
+
+## Usage
+### Build your own SD card image
+*Note: Here we use friendlycore-focal system as an example*  
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/h3/images-for-eflasher), due to the bandwidth of the http server, we recommend downloading the file from the [NetDrive](https://download.friendlyelec.com/h3):
+```
+git clone https://github.com/friendlyarm/sd-fuse_h3 -b master sd-fuse_h3
+cd sd-fuse_h3
+wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-focal_4.14_armhf.tgz
+tar xvzf friendlycore-focal_4.14_armhf.tgz
+```
+After decompressing, you will get a directory named friendlycore-focal_4.14_armhf, you can change the files in the directory as needed, for example, replace rootfs.img with your own modified version, or your own compiled kernel and uboot, finally, flash the image to the SD card by entering the following command (The below steps assume your SD card is device /dev/sdX):
+```
+sudo ./fusing.sh /dev/sdX friendlycore-focal_4.14_armhf
+```
+Or, package it as an SD card image file:
+```
+./mk-sd-image.sh friendlycore-focal_4.14_armhf
+```
+The following flashable image file will be generated, it is now ready to be used to boot the device into friendlycore-focal:  
+```
+out/h3_sd_friendlycore-focal_4.14_armhf-YYYYMMDD.img
+```
+
+
+### Build your own SD-to-eMMC Image
+*Note: Here we use friendlycore-focal system as an example*  
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/h3/images-for-eflasher), here you need to download the friendlycore-focal and eflasher [pre-built images](http://112.124.9.243/dvdfiles/h3/images-for-eflasher):
+```
+git clone https://github.com/friendlyarm/sd-fuse_h3 -b master sd-fuse_h3
+cd sd-fuse_h3
+wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-focal_4.14_armhf.tgz
+tar xvzf friendlycore-focal_4.14_armhf.tgz
+wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/eflasher.tgz
+tar xvzf eflasher.tgz
+```
+Then use the following command to build the SD-to-eMMC image, the autostart=yes parameter means it will automatically enter the flash process when booting:
+```
+./mk-emmc-image.sh friendlycore-focal_4.14_armhf autostart=yes
+```
+The following flashable image file will be generated, ready to be used to boot the device into eflasher system and then flash friendlycore-focal system to eMMC: 
+```
+out/h3_eflasher_friendlycore-focal_4.14_armhf-YYYYMMDD.img
+```
+
+### Build your own root filesystem image
+*Note: Here we use friendlycore-focal system as an example*  
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/h3/images-for-eflasher):
+```
+git clone https://github.com/friendlyarm/sd-fuse_h3 -b master sd-fuse_h3
+cd sd-fuse_h3
+wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-focal_4.14_armhf.tgz
+tar xvzf friendlycore-focal_4.14_armhf.tgz
+```
+Download the compressed root file system tar ball and unzip it, the unzip command requires root privileges, so you need put sudo in front of the command:
+```
+wget http://112.124.9.243/dvdfiles/h3/rootfs/rootfs_friendlycore-focal_4.14.tgz
+sudo tar xzf rootfs_friendlycore-focal_4.14.tgz
+```
+Change something:
+```
+sudo sh -c 'echo hello > friendlycore-focal_4.14_armhf/rootfs/root/welcome.txt'
+```
+Make rootfs to img:
+```
+sudo ./build-rootfs-img.sh friendlycore-focal_4.14_armhf/rootfs friendlycore-focal_4.14_armhf
+```
+Use the new rootfs.img to build SD card image:
+```
+./mk-sd-image.sh friendlycore-focal_4.14_armhf
+```
+Or build SD-to-eMMC image:
+```
+./mk-emmc-image.sh friendlycore-focal_4.14_armhf
+```
+#### Tips
+
+* Using the debootstrap tool, you can customize the file system, pre-install packages, etc.
+
+
+### Compiling the Kernel
+*Note: Here we use friendlycore-focal system as an example*  
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/h3/images-for-eflasher):
+```
+git clone https://github.com/friendlyarm/sd-fuse_h3 -b master sd-fuse_h3
+cd sd-fuse_h3
+wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-focal_4.14_armhf.tgz
+tar xvzf friendlycore-focal_4.14_armhf.tgz
+```
+Download the kernel source code from github, using the environment variable KERNEL_SRC to specify the local source code directory:
+```
+export KERNEL_SRC=$PWD/kernel
+git clone https://github.com/friendlyarm/linux -b sunxi-4.14.y --depth 1 ${KERNEL_SRC}
+```
+Customize the kernel configuration:
+```
+cd $KERNEL_SRC
+touch .scmversion
+make ARCH=arm sunxi_defconfig
+make ARCH=arm CROSS_COMPILE=arm-linux- menuconfig
+make ARCH=arm CROSS_COMPILE=arm-linux- savedefconfig
+cp defconfig ./arch/arm/configs/my_defconfig                  # Save the configuration as my_defconfig
+git add ./arch/arm/configs/my_defconfig
+cd -
+```
+Specify the configuration of the kernel using the KCFG environment variable (KERNEL_SRC specifies the source directory), and compile the kernel with your configuration:
+```
+export KERNEL_SRC=$PWD/kernel
+export KCFG=my_defconfig
+./build-kernel.sh friendlycore-focal_4.14_armhf
+```
+
+### Compiling the u-boot
+*Note: Here we use friendlycore-focal system as an example* 
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/h3/images-for-eflasher)::
+```
+git clone https://github.com/friendlyarm/sd-fuse_h3 -b master sd-fuse_h3
+cd sd-fuse_h3
+wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-focal_4.14_armhf.tgz
+tar xvzf friendlycore-focal_4.14_armhf.tgz
+```
+Download the u-boot source code from github that matches the OS version, the environment variable UBOOT_SRC is used to specify the local source code directory:
+```
+export UBOOT_SRC=$PWD/uboot
+git clone https://github.com/friendlyarm/u-boot -b sunxi-v2017.x --depth 1 ${UBOOT_SRC}
+./build-uboot.sh friendlycore-focal_4.14_armhf
+```
+
