@@ -57,7 +57,7 @@ sd-fuse 使用不同的git分支来支持不同的内核版本, 当前支持的�
 *注: 这里以friendlycore-focal系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压friendlycore-focal系统的[分区镜像文件压缩包](http://112.124.9.243/dvdfiles/h3/images-for-eflasher), 由于http服务器带宽的关系, wget命令可能会比较慢, 推荐从网盘上下载同名的文件:
 ```
-git clone https://github.com/friendlyarm/sd-fuse_h3 -b master sd-fuse_h3
+git clone https://github.com/friendlyarm/sd-fuse_h3 -b master --single-branch sd-fuse_h3
 cd sd-fuse_h3
 wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-focal_4.14_armhf.tgz
 tar xvzf friendlycore-focal_4.14_armhf.tgz
@@ -80,7 +80,7 @@ out/h3_sd_friendlycore-focal_4.14_armhf-YYYYMMDD.img
 *注: 这里以friendlycore-focal系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像文件压缩包](http://112.124.9.243/dvdfiles/h3/images-for-eflasher), 这里需要下载friendlycore-focal和eflasher系统的文件:
 ```
-git clone https://github.com/friendlyarm/sd-fuse_h3 -b master sd-fuse_h3
+git clone https://github.com/friendlyarm/sd-fuse_h3 -b master --single-branch sd-fuse_h3
 cd sd-fuse_h3
 wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-focal_4.14_armhf.tgz
 tar xvzf friendlycore-focal_4.14_armhf.tgz
@@ -100,7 +100,7 @@ out/h3_eflasher_friendlycore-focal_4.14_armhf-YYYYMMDD.img
 *注: 这里以friendlycore-focal系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/h3/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_h3 -b master sd-fuse_h3
+git clone https://github.com/friendlyarm/sd-fuse_h3 -b master --single-branch sd-fuse_h3
 cd sd-fuse_h3
 wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-focal_4.14_armhf.tgz
 tar xvzf friendlycore-focal_4.14_armhf.tgz
@@ -134,7 +134,7 @@ sudo ./build-rootfs-img.sh friendlycore-focal_4.14_armhf/rootfs friendlycore-foc
 *注: 这里以friendlycore-focal系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/h3/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_h3 -b master sd-fuse_h3
+git clone https://github.com/friendlyarm/sd-fuse_h3 -b master --single-branch sd-fuse_h3
 cd sd-fuse_h3
 wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-focal_4.14_armhf.tgz
 tar xvzf friendlycore-focal_4.14_armhf.tgz
@@ -166,7 +166,7 @@ export KCFG=my_defconfig
 *注: 这里以friendlycore-focal系统为例进行说明* 
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/h3/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_h3 -b master sd-fuse_h3
+git clone https://github.com/friendlyarm/sd-fuse_h3 -b master --single-branch sd-fuse_h3
 cd sd-fuse_h3
 wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-focal_4.14_armhf.tgz
 tar xvzf friendlycore-focal_4.14_armhf.tgz

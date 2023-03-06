@@ -57,7 +57,7 @@ If the files are not prepared in advance, the script will automatically download
 *Note: Here we use friendlycore-focal system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/h3/images-for-eflasher), due to the bandwidth of the http server, we recommend downloading the file from the [NetDrive](https://download.friendlyelec.com/h3):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_h3 -b master sd-fuse_h3
+git clone https://github.com/friendlyarm/sd-fuse_h3 -b master --single-branch sd-fuse_h3
 cd sd-fuse_h3
 wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-focal_4.14_armhf.tgz
 tar xvzf friendlycore-focal_4.14_armhf.tgz
@@ -80,7 +80,7 @@ out/h3_sd_friendlycore-focal_4.14_armhf-YYYYMMDD.img
 *Note: Here we use friendlycore-focal system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/h3/images-for-eflasher), here you need to download the friendlycore-focal and eflasher [pre-built images](http://112.124.9.243/dvdfiles/h3/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_h3 -b master sd-fuse_h3
+git clone https://github.com/friendlyarm/sd-fuse_h3 -b master --single-branch sd-fuse_h3
 cd sd-fuse_h3
 wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-focal_4.14_armhf.tgz
 tar xvzf friendlycore-focal_4.14_armhf.tgz
@@ -100,7 +100,7 @@ out/h3_eflasher_friendlycore-focal_4.14_armhf-YYYYMMDD.img
 *Note: Here we use friendlycore-focal system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/h3/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_h3 -b master sd-fuse_h3
+git clone https://github.com/friendlyarm/sd-fuse_h3 -b master --single-branch sd-fuse_h3
 cd sd-fuse_h3
 wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-focal_4.14_armhf.tgz
 tar xvzf friendlycore-focal_4.14_armhf.tgz
@@ -135,7 +135,7 @@ Or build SD-to-eMMC image:
 *Note: Here we use friendlycore-focal system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/h3/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_h3 -b master sd-fuse_h3
+git clone https://github.com/friendlyarm/sd-fuse_h3 -b master --single-branch sd-fuse_h3
 cd sd-fuse_h3
 wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-focal_4.14_armhf.tgz
 tar xvzf friendlycore-focal_4.14_armhf.tgz
@@ -167,7 +167,7 @@ export KCFG=my_defconfig
 *Note: Here we use friendlycore-focal system as an example* 
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/h3/images-for-eflasher)::
 ```
-git clone https://github.com/friendlyarm/sd-fuse_h3 -b master sd-fuse_h3
+git clone https://github.com/friendlyarm/sd-fuse_h3 -b master --single-branch sd-fuse_h3
 cd sd-fuse_h3
 wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-focal_4.14_armhf.tgz
 tar xvzf friendlycore-focal_4.14_armhf.tgz
