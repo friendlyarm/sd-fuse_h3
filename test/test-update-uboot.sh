@@ -16,10 +16,10 @@ sudo rm -rf tmp/*
 cd tmp
 git clone ../../.git sd-fuse_h3
 cd sd-fuse_h3
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/H3/images-for-eflasher/friendlycore-focal_4.14_armhf.tgz
-tar xzf friendlycore-focal_4.14_armhf.tgz
+wget --no-proxy http://${HTTP_SERVER}/dvdfiles/H3/images-for-eflasher/friendlycore-focal-images.tgz
+tar xzf friendlycore-focal-images.tgz
 
 git clone https://github.com/friendlyarm/u-boot --depth 1 -b sunxi-v2017.x uboot-h3
 
-UBOOT_SRC=$PWD/uboot-h3 ./build-uboot.sh friendlycore-focal_4.14_armhf
-sudo ./mk-sd-image.sh friendlycore-focal_4.14_armhf
+UBOOT_SRC=$PWD/uboot-h3 ./build-uboot.sh friendlycore-focal
+sudo ./mk-sd-image.sh friendlycore-focal

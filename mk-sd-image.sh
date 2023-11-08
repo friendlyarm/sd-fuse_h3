@@ -19,7 +19,7 @@ set -eu
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
 function usage() {
-       echo "Usage: $0 <friendlycore-focal_4.14_armhf|debian-jessie_4.14_armhf|friendlycore-xenial_4.14_armhf|friendlywrt_4.14_armhf|eflasher>"
+       echo "Usage: $0 <friendlycore-jammy|friendlycore-focal|debian-bookworm-core|debian-jessie|friendlycore|friendlywrt|eflasher>"
        exit 0
 }
 
@@ -34,7 +34,7 @@ true ${SOC:=h3}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-friendlycore-focal_4.14_armhf | debian-jessie_4.14_armhf | friendlycore-xenial_4.14_armhf | friendlywrt_4.14_armhf | eflasher)
+friendlycore-focal | friendlycore-jammy | debian-bookworm-core | debian-jessie | friendlycore | friendlywrt | eflasher)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -57,9 +57,9 @@ fi
 true ${RAW_SIZE_MB:=0}
 if [ $RAW_SIZE_MB -eq 0 ]; then
     case ${TARGET_OS} in
-    friendlycore-focal_4.14_armhf|debian-jessie_4.14_armhf|friendlycore-xenial_4.14_armhf|eflasher)
+    friendlycore-*|debian-*|eflasher)
         RAW_SIZE_MB=7800 ;;
-    friendlywrt_4.14_armhf)
+    friendlywrt)
         RAW_SIZE_MB=1000 ;;
     *)
         RAW_SIZE_MB=7800 ;;
@@ -70,23 +70,11 @@ if [ $# -eq 2 ]; then
     RAW_FILE=$2
 else
 	case ${TARGET_OS} in
-	friendlycore-focal_4.14_armhf)
-		RAW_FILE=${SOC}_sd_friendlycore-focal_4.14_armhf-$(date +%Y%m%d).img
-		;;
-	debian-jessie_4.14_armhf)
-		RAW_FILE=${SOC}_sd_debian-jessie_4.14_armhf-$(date +%Y%m%d).img
-		;;
-	friendlycore-xenial_4.14_armhf)
-		RAW_FILE=${SOC}_sd_friendlycore-xenial_4.14_armhf-$(date +%Y%m%d).img
-		;;
-	friendlywrt_4.14_armhf)
-		RAW_FILE=${SOC}_sd_friendlywrt_4.14_armhf-$(date +%Y%m%d).img
-		;;
 	eflasher)
 		RAW_FILE=${SOC}_eflasher-$(date +%Y%m%d).img
 		;;
 	*)
-		RAW_FILE=${SOC}_sd_${TARGET_OS}-$(date +%Y%m%d).img
+		RAW_FILE=${SOC}-sd-${TARGET_OS}-4.14-armhf-$(date +%Y%m%d).img
 		;;
 	esac
 fi

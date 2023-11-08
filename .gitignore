@@ -37,7 +37,7 @@ rootfs_*.tgz
 /core-qte.tgz*
 /friendlycore*.tgz*
 /debian*.tgz*
-/eflasher.tgz*
+/emmc-flasher-images.tgz*
 /lubuntu-desktop-images.tgz*
 /friendlywrt*.tgz
 /*.raw*

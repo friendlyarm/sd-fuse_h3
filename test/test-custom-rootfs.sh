@@ -16,16 +16,16 @@ sudo rm -rf tmp/*
 cd tmp
 git clone ../../.git sd-fuse_h3
 cd sd-fuse_h3
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/H3/images-for-eflasher/friendlycore-focal_4.14_armhf.tgz
-tar xzf friendlycore-focal_4.14_armhf.tgz
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/H3/images-for-eflasher/eflasher.tgz
-tar xzf eflasher.tgz
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/H3/rootfs/rootfs_friendlycore-focal_4.14.tgz
-tar xzf rootfs_friendlycore-focal_4.14.tgz -C friendlycore-focal_4.14_armhf
-echo hello > friendlycore-focal_4.14_armhf/rootfs/root/welcome.txt
-(cd friendlycore-focal_4.14_armhf/rootfs/root/ && {
-	wget --no-proxy http://${HTTP_SERVER}/dvdfiles/H3/images-for-eflasher/friendlycore-focal_4.14_armhf.tgz -O deleteme.tgz
+wget --no-proxy http://${HTTP_SERVER}/dvdfiles/H3/images-for-eflasher/friendlycore-focal-images.tgz
+tar xzf friendlycore-focal-images.tgz
+wget --no-proxy http://${HTTP_SERVER}/dvdfiles/H3/images-for-eflasher/emmc-flasher-images.tgz
+tar xzf emmc-flasher-images.tgz
+wget --no-proxy http://${HTTP_SERVER}/dvdfiles/H3/rootfs/rootfs-friendlycore-focal.tgz
+tar xzf rootfs-friendlycore-focal.tgz
+echo hello > friendlycore-focal/rootfs/root/welcome.txt
+(cd friendlycore-focal/rootfs/root/ && {
+	wget --no-proxy http://${HTTP_SERVER}/dvdfiles/H3/images-for-eflasher/friendlycore-focal-images.tgz -O deleteme.tgz
 });
-./build-rootfs-img.sh friendlycore-focal_4.14_armhf/rootfs friendlycore-focal_4.14_armhf
-sudo ./mk-sd-image.sh friendlycore-focal_4.14_armhf
-sudo ./mk-emmc-image.sh friendlycore-focal_4.14_armhf
+./build-rootfs-img.sh friendlycore-focal/rootfs friendlycore-focal
+sudo ./mk-sd-image.sh friendlycore-focal
+sudo ./mk-emmc-image.sh friendlycore-focal

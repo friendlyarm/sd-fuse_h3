@@ -2,10 +2,14 @@
 
 TARGET_OS=${1,,}
 case ${TARGET_OS} in
-friendlycore-focal_4.14_armhf | debian-jessie_4.14_armhf | friendlycore-xenial_4.14_armhf | friendlywrt_4.14_armhf | eflasher)
-	ROMFILE="${TARGET_OS}.tgz"
-        ;;
+friendlycore-focal | friendlycore-jammy | debian-bookworm-core | debian-jessie | friendlycore | friendlywrt | eflasher)
+	ROMFILE="${TARGET_OS}-images.tgz"
+	;;
+eflasher)
+	ROMFILE="emmc-flasher-images.tgz"
+	;;
 *)
 	ROMFILE=
+	;;
 esac
 echo $ROMFILE
