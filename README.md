@@ -25,7 +25,7 @@ For other kernel versions, please switch to the related git branch.
 * debian-bookworm-core
 * friendlycore-jammy
 * friendlycore-focal
-* friendlycore
+* friendlycore-xenial
 * friendlywrt
 * debian-jessie
 
@@ -140,7 +140,11 @@ Or build SD-to-eMMC image:
 ```
 ./mk-emmc-image.sh friendlycore-jammy
 ```
-
+If the image file is too large to be packaged, you can use an environment variable to reassign the image size, for example:
+```
+RAW_SIZE_MB=16000 ./mk-sd-image.sh friendlycore-jammy
+RAW_SIZE_MB=16000 ./mk-emmc-image.sh friendlycore-jammy
+```
 ### Compiling the Kernel
 *Note: Here we use friendlycore-jammy system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/h3/images-for-eflasher):
