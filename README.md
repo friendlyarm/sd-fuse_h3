@@ -119,10 +119,15 @@ cd sd-fuse_h3
 wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-jammy-images.tgz
 tar xvzf friendlycore-jammy-images.tgz
 ```
-Unzip the rootfs.tar.gz exported in the previous section, or download the filesystem archive from the following URL and unzip it, the unzip command requires root privileges, so you need put sudo in front of the command:
+Extract the rootfs.tar.gz exported in the previous section, the tar command requires root privileges, so you need put sudo in front of the command:
+```
+mkdir friendlycore-jammy/rootfs
+sudo tar xvzfp rootfs.tar.gz -C friendlycore-jammy/rootfs --numeric-owner --same-owner
+```
+or download the filesystem archive from the following URL and extract it:
 ```
 wget http://112.124.9.243/dvdfiles/h3/rootfs/rootfs-friendlycore-jammy.tgz
-sudo tar xzf rootfs-friendlycore-jammy.tgz
+sudo tar xvzfp rootfs-friendlycore-jammy.tgz --numeric-owner --same-owner
 ```
 Change something:
 ```
