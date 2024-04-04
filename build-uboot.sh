@@ -73,13 +73,6 @@ friendlycore-focal | friendlycore-jammy | debian-bookworm-core | debian-jessie |
         exit 0
 esac
 
-# Automatically re-run script under sudo if not root
-# if [ $(id -u) -ne 0 ]; then
-# 	echo "Re-running script under sudo..."
-# 	sudo UBOOT_SRC=${UBOOT_SRC} DISABLE_MKIMG=${DISABLE_MKIMG} "$0" "$@"
-# 	exit
-# fi
-
 download_img() {
     if [ ! -f ${PARTMAP} ]; then
 	ROMFILE=`./tools/get_pkg_filename.sh ${1}`
@@ -125,6 +118,7 @@ export PATH=/opt/FriendlyARM/toolchain/4.9.3/bin/:$PATH
 
 if ! [ -x "$(command -v simg2img)" ]; then
     sudo apt install android-tools-fsutils
+    # 20.04: sudo apt-get install android-sdk-libsparse-utils android-sdk-ext4-utils
 fi
 
 if ! [ -x "$(command -v swig)" ]; then

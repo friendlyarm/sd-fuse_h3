@@ -92,6 +92,17 @@ autoRestore=
 ; If the "autoExit" set to true, the eflasher-gui will automatically exit after burning or restoring is completed,
 ; You can do something else after burning or restoring by modifying /opt/run-eflasher.sh.
 autoExit=false
+
+[UI]
+; HDMI overscan option, examples:
+;     screenSizePercent=auto
+;     screenSizePercent=90
+screenSizePercent=auto
+
+welcomeMessage=
+hideMenuButton=false
+hideBackupAndRestoreButton=false
+hideStatusBar=false
 EOL
 }
 

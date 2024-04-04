@@ -86,7 +86,7 @@ RAW_SIZE_MB=${RAW_SIZE_MB} ./mk-sd-image.sh eflasher && \
 	./tools/fill_img_to_eflasher out/${SOC}_eflasher-$(date +%Y%m%d).img ${SOC} $@ && { 
 		rm -f out/${SOC}_eflasher-$(date +%Y%m%d).img
 		mkdir -p out/images-for-eflasher
-		tar czf out/images-for-eflasher/${TARGET_OS}.tgz ${TARGET_OS}
+		tar czf out/images-for-eflasher/${TARGET_OS}-images.tgz ${TARGET_OS}
 		echo "all done."
 }
 
