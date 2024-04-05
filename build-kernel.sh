@@ -35,10 +35,10 @@ KDTB=arch/${ARCH}/boot/dts/sun8i-*-nanopi-*.dtb
 KALL="zImage dtbs"
 CROSS_COMPILE=arm-linux-
 
-# 
+#
 # kernel logo:
-# 
-# convert logo.jpg -type truecolor /tmp/logo.bmp 
+#
+# convert logo.jpg -type truecolor /tmp/logo.bmp
 # convert logo.jpg -type truecolor /tmp/logo_kernel.bmp
 # LOGO=/tmp/logo.bmp
 # KERNEL_LOGO=/tmp/logo_kernel.bmp
@@ -71,6 +71,13 @@ function usage() {
 if [ $# -ne 1 ]; then
     usage
 fi
+
+. ${TOPPATH}/tools/util.sh
+check_and_install_toolchain
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+check_and_install_package
 
 # ----------------------------------------------------------
 # Get target OS
@@ -118,16 +125,6 @@ EOF
 if [ ! -d ${KERNEL_SRC} ]; then
 	git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}
 fi
-
-if [ ! -d /opt/FriendlyARM/toolchain/4.9.3 ]; then
-	echo "please install arm-linux-gcc 4.9.3 first, using these commands: "
-	echo -e "\tgit clone https://github.com/friendlyarm/prebuilts.git"
-	echo -e "\tsudo mkdir -p /opt/FriendlyARM/toolchain"
-	echo -e "\tsudo cat prebuilts/gcc-x64/toolchain-4.9.3-armhf.tar.gza* >prebuilts/gcc-x64/toolchain-4.9.3-armhf.tar.gz"
-	echo -e "\tsudo tar xf prebuilts/gcc-x64/toolchain-4.9.3-armhf.tar.gz -C /"
-	exit 1
-fi
-export PATH=/opt/FriendlyARM/toolchain/4.9.3/bin/:$PATH
 
 cd ${KERNEL_SRC}
 make distclean
@@ -219,15 +216,10 @@ if [ x"$DISABLE_MKIMG" = x"1" ]; then
 fi
 
 echo "building kernel ok."
-if ! [ -x "$(command -v simg2img)" ]; then
-    sudo apt update
-    sudo apt install android-tools-fsutils
-fi
 
 cd ${TOPPATH}
 download_img ${TARGET_OS}
 KCFG=${KCFG} ./tools/update_kernel_bin_to_img.sh ${OUT} ${KERNEL_SRC} ${TARGET_OS} ${TOPPATH}/prebuilt
-
 
 if [ $? -eq 0 ]; then
     echo "updating kernel ok."

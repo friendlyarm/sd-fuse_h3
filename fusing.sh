@@ -119,12 +119,9 @@ if [ $(id -u) -ne 0 ]; then
 	exit
 fi
 
-# ----------------------------------------------------------
-# Get host machine
-ARCH=
-if grep 'ARMv7 Processor' /proc/cpuinfo >/dev/null; then
-#	EMMC=.emmc
-	ARCH=armv7/
+HOST_ARCH=
+if uname -mpi | grep aarch64 >/dev/null; then
+    HOST_ARCH="aarch64/"
 fi
 
 # ----------------------------------------------------------
@@ -147,7 +144,7 @@ set -e
 # ----------------------------------------------------------
 # partition card & fusing filesystem
 
-true ${SD_UPDATE:=./tools/${ARCH}sd_update}
+true ${SD_UPDATE:=./tools/${HOST_ARCH}sd_update}
 true ${SD_TUNEFS:=./tools/sd_tune2fs.sh}
 
 [[ -z $2 && ! -f ${PARTMAP} ]] && {
@@ -173,26 +170,12 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-if [ -z ${ARCH} ]; then
-	partprobe /dev/${DEV_NAME} -s 2>/dev/null
+if ! command -v partprobe &>/dev/null; then
+	sudo apt-get install parted
 fi
 
-if [ $? -ne 0 ]; then
-	echo "Warning: Re-reading the partition table failed"
-else
-	# optional: update uuid & label
-	case ${TARGET_OS} in
-	android)
-		sleep 1
-		${SD_TUNEFS} /dev/${DEV_NAME};;
-	friendlycore* | friendlywrt* )
-		sleep 1
-        echo "### try to resize2fs: /dev/${DEV_PART}"
-		resize2fs -f /dev/${DEV_PART};;
-	esac
-fi
+partprobe /dev/${DEV_NAME} -s 2>/dev/null
 
 echo "---------------------------------"
-echo "${TARGET_OS^} is fused successfully."
 echo "All done."
 

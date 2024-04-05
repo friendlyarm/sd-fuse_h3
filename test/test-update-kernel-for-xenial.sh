@@ -19,8 +19,7 @@ cd sd-fuse_h3
 wget --no-proxy http://${HTTP_SERVER}/dvdfiles/H3/images-for-eflasher/friendlycore-images.tgz
 tar xzf friendlycore-images.tgz
 
-# git clone https://github.com/friendlyarm/linux -b sunxi-4.14.y --depth 1 kernel-h3
-git clone git@192.168.1.5:/allwinner/linux-sunxi.git --depth 1 -b sunxi-4.14.y-devel kernel-h3
+git clone https://github.com/friendlyarm/linux -b sunxi-4.14.y --depth 1 kernel-h3
 
 KERNEL_SRC=$PWD/kernel-h3 ./build-kernel.sh friendlycore
 sudo ./mk-sd-image.sh friendlycore

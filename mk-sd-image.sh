@@ -27,6 +27,16 @@ if [ $# -eq 0 ]; then
 	usage
 fi
 
+# Automatically re-run script under sudo if not root
+if [ $(id -u) -ne 0 ]; then
+	echo "Re-running script under sudo..."
+	sudo --preserve-env "$0" "$@"
+	exit
+fi
+
+. tools/util.sh
+check_and_install_package
+
 # ----------------------------------------------------------
 # Get platform, target OS
 
@@ -40,16 +50,6 @@ friendlycore-focal | friendlycore-jammy | debian-bookworm-core | debian-jessie |
         echo "Error: Unsupported target OS: ${TARGET_OS}"
         exit 0
 esac
-
-
-# Automatically re-run script under sudo if not root
-if [ $(id -u) -ne 0 ]; then
-	echo "Re-running script under sudo..."
-	sudo --preserve-env "$0" "$@"
-	exit
-fi
-
-
 
 # ----------------------------------------------------------
 # Create zero file
@@ -113,6 +113,7 @@ fi
 # Setup loop device
 
 LOOP_DEVICE=$(losetup -f)
+sleep 1
 
 echo "Using device: ${LOOP_DEVICE}"
 
@@ -135,7 +136,7 @@ ${SD_FUSING} ${LOOP_DEVICE} ${TARGET_OS}
 RET=$?
 
 if [ "x${TARGET_OS}" = "xeflasher" ]; then
-	mkfs.exfat ${LOOP_DEVICE}p1 -n FriendlyARM
+	sudo mkfs.exfat ${LOOP_DEVICE}p1 -n FriendlyARM
 fi
 
 # cleanup
@@ -151,4 +152,3 @@ echo "---------------------------------"
 echo "RAW image successfully created (`date +%T`)."
 ls -l ${RAW_FILE}
 echo "Tip: You can compress it to save disk space."
-

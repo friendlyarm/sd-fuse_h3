@@ -8,7 +8,7 @@ if [ $# -lt 2 ]; then
     echo "    ./build-boot-img.sh friendlycore/boot friendlycore/boot.img"
     exit 1
 fi
-TOPDIR=$PWD
+TOPPATH=$PWD
 
 BOOT_DIR=$1
 IMGFILE=$2
@@ -24,9 +24,11 @@ if [ $(id -u) -ne 0 ]; then
  	sudo --preserve-env "$0" "$@"
  	exit
 fi
+. ${TOPPATH}/tools/util.sh
+check_and_install_package
 
 #64M
-RAW_SIZE_MB=$(( `grep "boot.img" $TOPDIR/prebuilt/partmap.template | cut -f 4 -d":" | cut -f 2 -d","`/1024/1024 ))
+RAW_SIZE_MB=$(( `grep "boot.img" $TOPPATH/prebuilt/partmap.template | cut -f 4 -d":" | cut -f 2 -d","`/1024/1024 ))
 if [ -n "$RAW_SIZE_MB" ] && [ "$RAW_SIZE_MB" -eq "$RAW_SIZE_MB" ] 2>/dev/null; then
     echo ""
 else

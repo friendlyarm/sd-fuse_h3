@@ -14,12 +14,17 @@ if [ $(id -u) -ne 0 ]; then
 fi
 
 TOP=$PWD
+HOST_ARCH=
+if uname -mpi | grep aarch64 >/dev/null; then
+    HOST_ARCH="aarch64/"
+fi
+
 export MKE2FS_CONFIG="${TOP}/tools/mke2fs.conf"
 if [ ! -f ${MKE2FS_CONFIG} ]; then
     echo "error: ${MKE2FS_CONFIG} not found."
     exit 1
 fi
-true ${MKFS:="${TOP}/tools/mke2fs"}
+true ${MKFS:="${TOP}/tools/${HOST_ARCH}mke2fs"}
 
 true ${SOC:=h3}
 ARCH=arm
@@ -154,7 +159,7 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
         echo "IMG_SIZE=${IMG_SIZE}" > ${OUT}/${TARGET_OS}_rootfs-img.info
         ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
     fi
-else 
+else
     echo "not found ${TARGET_OS}/rootfs.img"
     exit 1
 fi

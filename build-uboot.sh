@@ -38,9 +38,6 @@ fi
 true ${UBOOT_SRC:=${OUT}/uboot-${SOC}}
 echo "uboot src: ${UBOOT_SRC}"
 
-# You need to install:
-# apt-get install swig python-dev python3-dev
-
 function usage() {
        echo "Usage: $0 <friendlycore-jammy|friendlycore-focal|debian-bookworm-core|debian-jessie|friendlywrt>"
        echo "# example:"
@@ -58,6 +55,25 @@ function usage() {
 
 if [ $# -ne 1 ]; then
     usage
+fi
+
+. ${TOPPATH}/tools/util.sh
+check_and_install_toolchain
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+check_and_install_package
+
+if ! [ -x "$(command -v python2)" ]; then
+	sudo apt install python2
+fi
+if ! [ -x "$(command -v python)" ]; then
+    (cd /usr/bin/ && sudo ln -s python2 python)
+fi
+# get include path for this python version
+INCLUDE_PY=$(python -c "from distutils import sysconfig as s; print s.get_config_vars()['INCLUDEPY']")
+if [ ! -f "${INCLUDE_PY}/Python.h" ]; then
+    sudo apt install python2-dev
 fi
 
 # ----------------------------------------------------------
@@ -106,30 +122,6 @@ EOF
 if [ ! -d ${UBOOT_SRC} ]; then
 	git clone ${UBOOT_REPO} --depth 1 -b ${UBOOT_BRANCH} ${UBOOT_SRC}
 fi
-
-if [ ! -d /opt/FriendlyARM/toolchain/4.9.3 ]; then
-	echo "please install arm-linux-gcc 4.9.3 first by running these commands: "
-	echo "\tgit clone https://github.com/friendlyarm/prebuilts.git"
-	echo "\tsudo mkdir -p /opt/FriendlyARM/toolchain"
-	echo "\tsudo tar xf prebuilts/gcc-x64/arm-cortexa9-linux-gnueabihf-4.9.3.tar.xz -C /opt/FriendlyARM/toolchain/"
-	exit 1
-fi
-export PATH=/opt/FriendlyARM/toolchain/4.9.3/bin/:$PATH
-
-if ! [ -x "$(command -v simg2img)" ]; then
-    sudo apt install android-tools-fsutils
-    # 20.04: sudo apt-get install android-sdk-libsparse-utils android-sdk-ext4-utils
-fi
-
-if ! [ -x "$(command -v swig)" ]; then
-    sudo apt install swig
-fi
-
-# get include path for this python version
-INCLUDE_PY=$(python -c "from distutils import sysconfig as s; print s.get_config_vars()['INCLUDEPY']")
-if [ ! -f "${INCLUDE_PY}/Python.h" ]; then
-    sudo apt install python-dev python3-dev
-fi  
 
 cd ${UBOOT_SRC}
 make clean
