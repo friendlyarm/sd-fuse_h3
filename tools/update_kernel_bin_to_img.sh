@@ -28,13 +28,12 @@ true ${MKFS:="${TOP}/tools/${HOST_ARCH}mke2fs"}
 
 true ${SOC:=h3}
 ARCH=arm
-true ${KCFG:=sunxi_defconfig}
 KIMG=arch/${ARCH}/boot/zImage
 KDTB_NANOPI=arch/${ARCH}/boot/dts/sun8i-*-nanopi-*.dtb
 KDTB_ZEROPI=arch/${ARCH}/boot/dts/sun8i-h3-zeropi.dtb
 KOVERLAY=arch/${ARCH}/boot/dts/overlays
 KALL="zImage dtbs"
-CROSS_COMPILER=arm-linux-
+CROSS_COMPILE=arm-linux-
 # ${OUT} ${KERNEL_SRC} ${TOPPATH}/${TARGET_OS} ${TOPPATH}/prebuilt
 if [ $# -ne 4 ]; then
         echo "bug: missing arg, $0 needs four args"
@@ -42,7 +41,7 @@ if [ $# -ne 4 ]; then
 fi
 OUT=$1
 KERNEL_BUILD_DIR=$2
-TARGET_OS=$3
+TARGET_OS=$(echo ${3,,}|sed 's/\///g')
 PREBUILT=$4
 KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 
@@ -163,5 +162,3 @@ else
     echo "not found ${TARGET_OS}/rootfs.img"
     exit 1
 fi
-
-

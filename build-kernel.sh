@@ -51,7 +51,8 @@ if [ ! -d $OUT ]; then
 	exit 1
 fi
 KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
-true ${KERNEL_SRC:=${OUT}/kernel-${SOC}}
+true ${kernel_src:=${OUT}/kernel-${SOC}}
+true ${KERNEL_SRC:=${kernel_src}}
 
 function usage() {
        echo "Usage: $0 <friendlycore-jammy|friendlycore-focal|debian-bookworm-core|debian-jessie|friendlycore|friendlywrt|eflasher>"
@@ -81,7 +82,7 @@ check_and_install_package
 
 # ----------------------------------------------------------
 # Get target OS
-true ${TARGET_OS:=${1,,}}
+true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 PARTMAP=./${TARGET_OS}/partmap.txt
 
 case ${TARGET_OS} in

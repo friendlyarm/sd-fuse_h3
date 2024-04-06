@@ -41,7 +41,7 @@ check_and_install_package
 # Get platform, target OS
 
 true ${SOC:=h3}
-true ${TARGET_OS:=${1,,}}
+true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 
 case ${TARGET_OS} in
 friendlycore-focal | friendlycore-jammy | debian-bookworm-core | debian-jessie | friendlycore | friendlywrt | eflasher)
@@ -71,7 +71,7 @@ if [ $# -eq 2 ]; then
 else
 	case ${TARGET_OS} in
 	eflasher)
-		RAW_FILE=${SOC}_eflasher-$(date +%Y%m%d).img
+		RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img
 		;;
 	*)
 		RAW_FILE=${SOC}-sd-${TARGET_OS}-4.14-armhf-$(date +%Y%m%d).img
@@ -85,18 +85,15 @@ if [ ! -d $OUT ]; then
 	exit 1
 fi
 RAW_FILE=${OUT}/${RAW_FILE}
+if [ -f "${RAW_FILE}" ]; then
+	rm -f ${RAW_FILE}
+fi
 
 BLOCK_SIZE=1024
 let RAW_SIZE=(${RAW_SIZE_MB}*1000*1000)/${BLOCK_SIZE}
 
 echo "Creating RAW image: ${RAW_FILE} (${RAW_SIZE_MB} MB)"
 echo "---------------------------------"
-
-
-if [ -f "${RAW_FILE}" ]; then
-	rm -f ${RAW_FILE}
-fi
-
 dd if=/dev/zero of=${RAW_FILE} bs=${BLOCK_SIZE} count=0 \
 	seek=${RAW_SIZE} || exit 1
 
@@ -113,9 +110,15 @@ fi
 # Setup loop device
 
 LOOP_DEVICE=$(losetup -f)
-sleep 1
-
 echo "Using device: ${LOOP_DEVICE}"
+for i in `seq 3`; do
+    if [ -b ${LOOP_DEVICE} ]; then
+        break
+    else
+        echo "Waitting ${LOOP_DEVICE}"
+        sleep 1
+    fi
+done
 
 if losetup ${LOOP_DEVICE} ${RAW_FILE}; then
 	USE_KPARTX=1
@@ -129,7 +132,6 @@ fi
 
 # ----------------------------------------------------------
 # Fusing all
-
 true ${SD_FUSING:=$(dirname $0)/fusing.sh}
 
 ${SD_FUSING} ${LOOP_DEVICE} ${TARGET_OS}

@@ -72,7 +72,7 @@ fi
 # ----------------------------------------------------------
 # Get target OS
 
-true ${TARGET_OS:=${2,,}}
+true ${TARGET_OS:=$(echo ${2,,}|sed 's/\///g')}
 PARTMAP=./${TARGET_OS}/partmap.txt
 
 case ${TARGET_OS} in

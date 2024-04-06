@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TARGET_OS=${1,,}
+TARGET_OS=$(echo ${1,,}|sed 's/\///g')
 case ${TARGET_OS} in
 friendlycore-focal | friendlycore-jammy | debian-bookworm-core | debian-jessie | friendlycore | friendlywrt | eflasher)
 	ROMFILE="${TARGET_OS}-images.tgz"

@@ -77,6 +77,9 @@ function check_and_install_package() {
 	if ! command -v sfdisk &>/dev/null; then
 		PACKAGES="fdisk ${PACKAGES}"
 	fi
+	if ! command -v resize2fs &>/dev/null; then
+		PACKAGES="e2fsprogs ${PACKAGES}"
+	fi
 	if [ ! -z "${PACKAGES}" ]; then
 		sudo apt install ${PACKAGES}
 	fi
@@ -96,7 +99,7 @@ function check_and_install_toolchain() {
 		return 0
 		;;
 	*)
-		echo "Error: Cross-compile a 32bit binary only support on a x86_64 host."
+		echo "Error: cannot build armhf binary on this platform, only supports x86_64."
 		;;
 	esac
 	return 1

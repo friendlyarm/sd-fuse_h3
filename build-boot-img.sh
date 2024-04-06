@@ -11,7 +11,7 @@ fi
 TOPPATH=$PWD
 
 BOOT_DIR=$1
-IMGFILE=$2
+IMG_FILE=$2
 
 if [ ! -d ${BOOT_DIR} ]; then
     echo "path '${BOOT_DIR}' not found."
@@ -37,19 +37,28 @@ else
 fi
 
 RAW_SIZE=`expr 1024 \* ${RAW_SIZE_MB}`
-dd if=/dev/zero of=${IMGFILE} bs=1024 count=0 seek=${RAW_SIZE}
+dd if=/dev/zero of=${IMG_FILE} bs=1024 count=0 seek=${RAW_SIZE}
 
-LOOP=`losetup -f`
-losetup ${LOOP} ${IMGFILE}
-mkfs.vfat $LOOP -n BOOT -I > /dev/null
-partprobe ${LOOP}
+DEV=`losetup -f`
+for i in `seq 3`; do
+    if [ -b ${DEV} ]; then
+        break
+    else
+        echo "Waitting ${DEV}"
+        sleep 1
+    fi
+done
+losetup ${DEV} ${IMG_FILE}
+sleep 1
+mkfs.vfat $DEV -n BOOT -I > /dev/null
+partprobe ${DEV}
 TMPDIR=$(mktemp -d)
-mount -t vfat ${LOOP} ${TMPDIR}
+mount -t vfat ${DEV} ${TMPDIR}
 rsync -a --no-o --no-g ${BOOT_DIR}/* ${TMPDIR}/
 umount ${TMPDIR}
 rm -rf ${TMPDIR}
-losetup -d ${LOOP}
+losetup -d ${DEV}
 
-echo "generating ${IMGFILE} done."
+echo "generating ${IMG_FILE} done."
 exit 0
 

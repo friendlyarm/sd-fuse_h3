@@ -26,7 +26,7 @@ UBOOT_BRANCH=sunxi-v2017.x
 
 ARCH=arm
 UCFG=nanopi_h3_defconfig
-CROSS_COMPILER=arm-linux-
+CROSS_COMPILE=arm-linux-
 
 TOPPATH=$PWD
 OUT=$TOPPATH/out
@@ -34,9 +34,8 @@ if [ ! -d $OUT ]; then
 	echo "path not found: $OUT"
 	exit 1
 fi
-
-true ${UBOOT_SRC:=${OUT}/uboot-${SOC}}
-echo "uboot src: ${UBOOT_SRC}"
+true ${uboot_src:=${OUT}/uboot-${SOC}}
+true ${UBOOT_SRC:=${uboot_src}}
 
 function usage() {
        echo "Usage: $0 <friendlycore-jammy|friendlycore-focal|debian-bookworm-core|debian-jessie|friendlywrt>"
@@ -78,7 +77,7 @@ fi
 
 # ----------------------------------------------------------
 # Get target OS
-true ${TARGET_OS:=${1,,}}
+true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 PARTMAP=./${TARGET_OS}/partmap.txt
 
 case ${TARGET_OS} in
@@ -125,8 +124,8 @@ fi
 
 cd ${UBOOT_SRC}
 make clean
-make ${UCFG} ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILER}
-make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILER} -j$(nproc)
+make ${UCFG} ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE}
+make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} -j$(nproc)
 
 if [ $? -ne 0 ]; then
 	echo "failed to build uboot."

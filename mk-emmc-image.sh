@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eu
 
 # Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
 # (http://www.friendlyarm.com)
@@ -29,18 +30,11 @@ fi
 . tools/util.sh
 check_and_install_package
 
-# Automatically re-run script under sudo if not root
-if [ $(id -u) -ne 0 ]; then
-        echo "Re-running script under sudo..."
-        sudo --preserve-env "$0" "$@"
-        exit
-fi
-
 # ----------------------------------------------------------
 # Get platform, target OS
 
 true ${SOC:=h3}
-true ${TARGET_OS:=${1,,}}
+true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 
 case ${TARGET_OS} in
 friendlycore-focal | friendlycore-jammy | debian-bookworm-core | debian-jessie | friendlycore | friendlywrt)
@@ -84,13 +78,18 @@ EOF
 download_img ${TARGET_OS}
 download_img eflasher
 
+# Automatically re-run script under sudo if not root
+if [ $(id -u) -ne 0 ]; then
+	echo "Re-running script under sudo..."
+	sudo --preserve-env "$0" "$@"
+	exit
+fi
+
 true ${RAW_SIZE_MB:=0}
 RAW_SIZE_MB=${RAW_SIZE_MB} ./mk-sd-image.sh eflasher && \
-	./tools/fill_img_to_eflasher out/${SOC}_eflasher-$(date +%Y%m%d).img ${SOC} $@ && {
-		rm -f out/${SOC}_eflasher-$(date +%Y%m%d).img
+	./tools/fill_img_to_eflasher out/${SOC}-eflasher-$(date +%Y%m%d).img ${SOC} $@ && {
+		rm -f out/${SOC}-eflasher-$(date +%Y%m%d).img
 		mkdir -p out/images-for-eflasher
 		tar czf out/images-for-eflasher/${TARGET_OS}-images.tgz ${TARGET_OS}
 		echo "all done."
 }
-
-
