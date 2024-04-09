@@ -6,12 +6,7 @@ KERNEL_URL=https://github.com/friendlyarm/linux
 KERNEL_BRANCH=sunxi-4.14.y
 
 # hack for me
-PCNAME=`hostname`
-if [ x"${PCNAME}" = x"tzs-i7pc" ]; then
-    HTTP_SERVER=127.0.0.1
-    KERNEL_URL=git@192.168.1.5:/allwinner/linux-sunxi.git
-    KERNEL_BRANCH=sunxi-4.14.y-devel
-fi
+[ -f /etc/friendlyarm ] && source /etc/friendlyarm $(basename $(builtin cd ..; pwd))
 
 # clean
 mkdir -p tmp
