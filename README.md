@@ -11,7 +11,7 @@ This repository is a bunch of scripts to build bootable SD card images for Frien
   
 ## Requirements
 * Supports x86_64 and aarch64 platforms
-* Recommended Host OS: Ubuntu 20.04 LTS (Bionic Beaver) 64-bit or Higher
+* Recommended Host OS: Ubuntu 20.04 LTS (Focal Fossa) 64-bit or Higher. Note: Build will fail on Ubuntu Bionic since package lz4 is required
 * For x86_64 user, it is recommended to run this script to initialize the development environment: https://github.com/friendlyarm/build-env-on-ubuntu-bionic
 * Docker container: https://github.com/friendlyarm/docker-cross-compiler-novnc
 
@@ -130,10 +130,6 @@ or download the filesystem archive from the following URL and extract it:
 wget http://112.124.9.243/dvdfiles/h3/rootfs/rootfs-friendlycore-jammy.tgz
 ./tools/extract-rootfs-tar.sh rootfs-friendlycore-jammy.tgz
 ```
-Change something:
-```
-sudo sh -c 'echo hello > friendlycore-jammy/rootfs/root/welcome.txt'
-```
 Make rootfs to img:
 ```
 sudo ./build-rootfs-img.sh friendlycore-jammy/rootfs friendlycore-jammy
@@ -144,9 +140,9 @@ Use the new rootfs.img to build SD card image:
 ```
 Or build SD-to-eMMC image:
 ```
-./mk-emmc-image.sh friendlycore-jammy
+./mk-emmc-image.sh friendlycore-jammy autostart=yes
 ```
-If the image file is too large to be packaged, you can use an environment variable to reassign the image size, for example:
+If the image path is too big to pack, you can use the RAW_SIZE_MB environment variable to set a new image size. for example, you can set it to 16GB:
 ```
 RAW_SIZE_MB=16000 ./mk-sd-image.sh friendlycore-jammy
 RAW_SIZE_MB=16000 ./mk-emmc-image.sh friendlycore-jammy
@@ -160,14 +156,13 @@ cd sd-fuse_h3
 wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-jammy-images.tgz
 tar xvzf friendlycore-jammy-images.tgz
 ```
-Download the kernel source code from github, using the environment variable KERNEL_SRC to specify the local source code directory:
+Download the kernel source code from github:
 ```
-export KERNEL_SRC=$PWD/kernel
-git clone https://github.com/friendlyarm/linux -b sunxi-4.14.y --depth 1 ${KERNEL_SRC}
+git clone https://github.com/friendlyarm/linux -b sunxi-4.14.y --depth 1 kernel
 ```
 Customize the kernel configuration:
 ```
-cd $KERNEL_SRC
+cd kernel
 touch .scmversion
 make ARCH=arm sunxi_defconfig
 make ARCH=arm CROSS_COMPILE=arm-linux- menuconfig
@@ -176,11 +171,9 @@ cp defconfig ./arch/arm/configs/my_defconfig                  # Save the configu
 git add ./arch/arm/configs/my_defconfig
 cd -
 ```
-Specify the configuration of the kernel using the KCFG environment variable (KERNEL_SRC specifies the source directory), and compile the kernel with your configuration:
+To compile the kernel, use the environment variables KERNEL_SRC and KCFG to set the source code folder and the defconfig file:
 ```
-export KERNEL_SRC=$PWD/kernel
-export KCFG=my_defconfig
-./build-kernel.sh friendlycore-jammy
+KERNEL_SRC=kernel KCFG=my_defconfig ./build-kernel.sh friendlycore-jammy
 ```
 
 ### Compiling the u-boot
@@ -194,8 +187,7 @@ tar xvzf friendlycore-jammy-images.tgz
 ```
 Download the u-boot source code from github that matches the OS version, the environment variable UBOOT_SRC is used to specify the local source code directory:
 ```
-export UBOOT_SRC=$PWD/uboot
-git clone https://github.com/friendlyarm/u-boot -b sunxi-v2017.x --depth 1 ${UBOOT_SRC}
-./build-uboot.sh friendlycore-jammy
+git clone https://github.com/friendlyarm/u-boot -b sunxi-v2017.x --depth 1 uboot
+UBOOT_SRC=uboot ./build-uboot.sh friendlycore-jammy
 ```
 
