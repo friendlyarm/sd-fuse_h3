@@ -2,7 +2,7 @@
 set -eu
 
 if [ $# -lt 2 ]; then
-	echo "Usage: $0 <rootfs dir> <img filename> "
+	echo "Usage: $0 <rootfs dir> <img filename>"
     echo "example:"
     echo "    tar xvzf NETDISK/H3/rootfs/rootfs-friendlycore-20190603.tgz"
     echo "    ./build-rootfs-img.sh friendlycore/rootfs friendlycore"
