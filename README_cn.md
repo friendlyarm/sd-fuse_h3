@@ -23,7 +23,7 @@ sd-fuse 使用不同的git分支来支持不同的内核版本, 当前支持的�
 ## 支持的目标板OS
 
 * debian-bookworm-core
-* ubuntu-noble-core-arm64
+* ubuntu-noble-core
 * friendlycore-jammy
 * friendlycore-focal
 * friendlycore-xenial

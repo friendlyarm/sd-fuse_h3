@@ -22,7 +22,7 @@ set -eu
 # Checking device for fusing
 
 if [ $# -eq 0 ]; then
-	echo "Usage: $0 DEVICE <friendlycore-jammy | friendlycore-focal | debian-bookworm-core | debian-jessie | friendlycore | friendlywrt | eflasher>"
+	echo "Usage: $0 DEVICE <ubuntu-noble-core | friendlycore-jammy | friendlycore-focal | debian-bookworm-core | debian-jessie | friendlycore | friendlywrt | eflasher>"
 	exit 0
 fi
 
@@ -76,7 +76,7 @@ true ${TARGET_OS:=$(echo ${2,,}|sed 's/\///g')}
 PARTMAP=./${TARGET_OS}/partmap.txt
 
 case ${TARGET_OS} in
-friendlycore-focal | friendlycore-jammy | debian-bookworm-core | debian-jessie | friendlycore | friendlywrt | eflasher)
+ubuntu-noble-core | friendlycore-focal | friendlycore-jammy | debian-bookworm-core | debian-jessie | friendlycore | friendlywrt | eflasher)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"

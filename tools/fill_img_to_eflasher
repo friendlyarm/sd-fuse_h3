@@ -73,7 +73,7 @@ gen_eflasher_conf()
     if [ ${3} = "yes" ]; then
         AutoFlashOSName=${2}
     fi
-	OSNamesMergeWithComma="debian-bookworm-core,friendlycore-jammy,friendlywrt,debian-jessie,friendlycore,friendlycore-focal"
+	OSNamesMergeWithComma="ubuntu-noble-core,debian-bookworm-core,friendlycore-jammy,friendlywrt,debian-jessie,friendlycore,friendlycore-focal"
 	cat > ${1}/eflasher.conf <<EOL
 ; This is the eFlasher configuration file.
 ; See http://wiki.friendlyarm.com/wiki/index.php/EFlasher for detailed information.

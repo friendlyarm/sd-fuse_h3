@@ -24,6 +24,7 @@ rootfs*.tgz
 #
 
 /mnt
+/ubuntu-noble-core
 /vendor
 /android
 /core-qte*

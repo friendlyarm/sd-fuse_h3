@@ -37,7 +37,7 @@ true ${SOC:=h3}
 true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 
 case ${TARGET_OS} in
-friendlycore-focal | friendlycore-jammy | debian-bookworm-core | debian-jessie | friendlycore | friendlywrt)
+ubuntu-noble-core | friendlycore-focal | friendlycore-jammy | debian-bookworm-core | debian-jessie | friendlycore | friendlywrt)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"

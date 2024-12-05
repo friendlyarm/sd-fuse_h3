@@ -81,7 +81,7 @@ true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 PARTMAP=./${TARGET_OS}/partmap.txt
 
 case ${TARGET_OS} in
-friendlycore-focal | friendlycore-jammy | debian-bookworm-core | debian-jessie | friendlycore | friendlywrt | eflasher)
+ubuntu-noble-core | friendlycore-focal | friendlycore-jammy | debian-bookworm-core | debian-jessie | friendlycore | friendlywrt | eflasher)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"

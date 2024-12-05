@@ -24,7 +24,7 @@ For other kernel versions, please switch to the related git branch.
 *Notes: The OS name is the same as the directory name, it is written in the script so it cannot be renamed.*
 
 * debian-bookworm-core
-* ubuntu-noble-core-arm64
+* ubuntu-noble-core
 * friendlycore-jammy
 * friendlycore-focal
 * friendlycore-xenial
