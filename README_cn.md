@@ -26,7 +26,7 @@ sd-fuse 使用不同的git分支来支持不同的内核版本, 当前支持的�
 * ubuntu-noble-core
 * friendlycore-jammy
 * friendlycore-focal
-* friendlycore-xenial
+* friendlycore
 * friendlywrt
 * debian-jessie
 

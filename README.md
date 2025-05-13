@@ -27,7 +27,7 @@ For other kernel versions, please switch to the related git branch.
 * ubuntu-noble-core
 * friendlycore-jammy
 * friendlycore-focal
-* friendlycore-xenial
+* friendlycore
 * friendlywrt
 * debian-jessie
 
