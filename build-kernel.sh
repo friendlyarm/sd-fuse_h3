@@ -53,7 +53,9 @@ if [ ! -d $OUT ]; then
 fi
 KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 true ${kernel_src:=out/kernel-${SOC}}
-true ${KERNEL_SRC:=$(readlink -f ${kernel_src})}
+kernel_src=$(readlink -f ${kernel_src})
+true ${KERNEL_SRC:=${kernel_src}}
+KERNEL_SRC=$(readlink -f ${KERNEL_SRC})
 
 function usage() {
        echo "Usage: $0 <img dir>"
