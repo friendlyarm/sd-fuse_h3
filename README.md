@@ -24,12 +24,13 @@ For other kernel versions, please switch to the related git branch.
 *Notes: The OS name is the same as the directory name, it is written in the script so it cannot be renamed.*
 
 * debian-bookworm-core
-* ubuntu-noble-core
-* friendlycore-jammy
-* friendlycore-focal
-* friendlycore
-* friendlywrt
 * debian-jessie
+* eflasher
+* friendlycore
+* friendlycore-focal
+* friendlycore-jammy
+* friendlywrt
+* ubuntu-noble-core
 
   
 To build an SD card image for friendlycore-jammy, for example like this:
@@ -165,7 +166,9 @@ Customize the kernel configuration:
 ```
 cd kernel
 touch .scmversion
+
 make ARCH=arm sunxi_defconfig
+
 make ARCH=arm CROSS_COMPILE=arm-linux- menuconfig
 make ARCH=arm CROSS_COMPILE=arm-linux- savedefconfig
 cp defconfig ./arch/arm/configs/my_defconfig                  # Save the configuration as my_defconfig

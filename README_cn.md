@@ -23,12 +23,13 @@ sd-fuse 使用不同的git分支来支持不同的内核版本, 当前支持的�
 ## 支持的目标板OS
 
 * debian-bookworm-core
-* ubuntu-noble-core
-* friendlycore-jammy
-* friendlycore-focal
-* friendlycore
-* friendlywrt
 * debian-jessie
+* eflasher
+* friendlycore
+* friendlycore-focal
+* friendlycore-jammy
+* friendlywrt
+* ubuntu-noble-core
 
   
 这些OS名称是分区镜像文件存放的目录名, 在脚本内亦有严格定义, 所以不能改动, 例如要制作friendlycore-jammy的SD固件, 可使用如下命令:
@@ -165,7 +166,9 @@ git clone https://github.com/friendlyarm/linux -b sunxi-4.14.y --depth 1 kernel
 ```
 cd kernel
 touch .scmversion
+
 make ARCH=arm sunxi_defconfig
+
 make ARCH=arm CROSS_COMPILE=arm-linux- menuconfig     # 根据需要改动配置
 make ARCH=arm CROSS_COMPILE=arm-linux- savedefconfig
 cp defconfig ./arch/arm/configs/my_defconfig                  # 保存配置 my_defconfig
