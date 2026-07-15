@@ -42,10 +42,10 @@ To build an SD card image for friendlycore-jammy, for example like this:
 The following files may be required to build SD card image:
 * kernel source code: In the directory "07_Source codes" of [NetDrive](https://download.friendlyelec.com/h3), or download from [Github](https://github.com/friendlyarm/linux), the branch name is sunxi-4.14.y
 * uboot source code: In the directory "07_Source codes" of [NetDrive](https://download.friendlyelec.com/h3), or download from [Github](https://github.com/friendlyarm/u-boot), the branch name is sunxi-v2017.x
-* pre-built partition image: In the directory "03_Partition image files" of [NetDrive](https://download.friendlyelec.com/h3), or download from [HTTP server](http://112.124.9.243/dvdfiles/h3/images-for-eflasher)
-* compressed root file system tar ball: In the directory "06_File systems" of [NetDrive](https://download.friendlyelec.com/h3), or download from [HTTP server](http://112.124.9.243/dvdfiles/h3/rootfs)
+* pre-built partition image: In the directory "03_Partition image files" of [NetDrive](https://download.friendlyelec.com/h3), or download from [server](https://downloads.friendlyelec.com/os-images/h3/images)
+* compressed root file system tar ball: In the directory "06_File systems" of [NetDrive](https://download.friendlyelec.com/h3), or download from [server](https://downloads.friendlyelec.com/rootfs/h3)
   
-If the files are not prepared in advance, the script will automatically download the required files, but the speed may be slower due to the bandwidth of the http server.
+If the files are not prepared in advance, the script will download the latest version from the server.
 
 ## Script Functions
 * fusing.sh: Flash the image to SD card
@@ -61,11 +61,11 @@ If the files are not prepared in advance, the script will automatically download
 ## Usage
 ### Build your own SD card image
 *Note: Here we use friendlycore-jammy system as an example*  
-Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/h3/images-for-eflasher), due to the bandwidth of the http server, we recommend downloading the file from the [NetDrive](https://download.friendlyelec.com/h3):
+Clone this repository locally, then download and uncompress the [pre-built images](https://downloads.friendlyelec.com/os-images/h3/images):
 ```
 git clone https://github.com/friendlyarm/sd-fuse_h3 -b master --single-branch sd-fuse_h3
 cd sd-fuse_h3
-wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-jammy-images.tgz
+wget https://downloads.friendlyelec.com/os-images/h3/images/friendlycore-jammy-images.tgz
 tar xvzf friendlycore-jammy-images.tgz
 ```
 After decompressing, you will get a directory named friendlycore-jammy, you can change the files in the directory as needed, for example, replace rootfs.img with your own modified version, or your own compiled kernel and uboot, finally, flash the image to the SD card by entering the following command (The below steps assume your SD card is device /dev/sdX):
@@ -83,13 +83,13 @@ out/h3-sd-friendlycore-jammy-4.14-armhf-YYYYMMDD.img
 
 ### Build your own SD-to-eMMC Image
 *Note: Here we use friendlycore-jammy system as an example*  
-Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/h3/images-for-eflasher), here you need to download the friendlycore-jammy and eflasher [pre-built images](http://112.124.9.243/dvdfiles/h3/images-for-eflasher):
+Clone this repository locally, then download and uncompress the [pre-built images](https://downloads.friendlyelec.com/os-images/h3/images), here you need to download the friendlycore-jammy and eflasher [pre-built images](https://downloads.friendlyelec.com/os-images/h3/images):
 ```
 git clone https://github.com/friendlyarm/sd-fuse_h3 -b master --single-branch sd-fuse_h3
 cd sd-fuse_h3
-wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-jammy-images.tgz
+wget https://downloads.friendlyelec.com/os-images/h3/images/friendlycore-jammy-images.tgz
 tar xvzf friendlycore-jammy-images.tgz
-wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/emmc-flasher-images.tgz
+wget https://downloads.friendlyelec.com/os-images/h3/images/emmc-flasher-images.tgz
 tar xvzf emmc-flasher-images.tgz
 ```
 Then use the following command to build the SD-to-eMMC image, the autostart=yes parameter means it will automatically enter the flash process when booting:
@@ -114,11 +114,11 @@ tar --warning=no-file-changed -cvpzf /rootfs.tar.gz \
 ```
 #### Making a bootable SD card from a root filesystem
 *Note: Here we use friendlycore-jammy system as an example*  
-Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/h3/images-for-eflasher):
+Clone this repository locally, then download and uncompress the [pre-built images](https://downloads.friendlyelec.com/os-images/h3/images):
 ```
 git clone https://github.com/friendlyarm/sd-fuse_h3 -b master --single-branch sd-fuse_h3
 cd sd-fuse_h3
-wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-jammy-images.tgz
+wget https://downloads.friendlyelec.com/os-images/h3/images/friendlycore-jammy-images.tgz
 tar xvzf friendlycore-jammy-images.tgz
 ```
 Extract the rootfs.tar.gz exported in the previous section, the tar command requires root privileges, so you need put sudo in front of the command:
@@ -128,7 +128,9 @@ mkdir friendlycore-jammy/rootfs
 ```
 or download the filesystem archive from the following URL and extract it:
 ```
-wget http://112.124.9.243/dvdfiles/h3/rootfs/rootfs-friendlycore-jammy.tgz
+wget https://downloads.friendlyelec.com/rootfs/h3/rootfs-friendlycore-jammy.tgz
+wget https://downloads.friendlyelec.com/rootfs/h3/rootfs-friendlycore-jammy.tgz.sha256
+sha256sum -c rootfs-friendlycore-jammy.tgz.sha256
 ./tools/extract-rootfs-tar.sh rootfs-friendlycore-jammy.tgz
 ```
 Make rootfs to img:
@@ -151,11 +153,11 @@ RAW_SIZE_MB=16000 ./mk-emmc-image.sh friendlycore-jammy
 
 ### Compiling the Kernel
 *Note: Here we use friendlycore-jammy system as an example*  
-Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/h3/images-for-eflasher):
+Clone this repository locally, then download and uncompress the [pre-built images](https://downloads.friendlyelec.com/os-images/h3/images):
 ```
 git clone https://github.com/friendlyarm/sd-fuse_h3 -b master --single-branch sd-fuse_h3
 cd sd-fuse_h3
-wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-jammy-images.tgz
+wget https://downloads.friendlyelec.com/os-images/h3/images/friendlycore-jammy-images.tgz
 tar xvzf friendlycore-jammy-images.tgz
 ```
 Download the kernel source code from github:
@@ -182,11 +184,11 @@ KERNEL_SRC=kernel KCFG=my_defconfig ./build-kernel.sh friendlycore-jammy
 
 ### Compiling the u-boot
 *Note: Here we use friendlycore-jammy system as an example* 
-Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/h3/images-for-eflasher):
+Clone this repository locally, then download and uncompress the [pre-built images](https://downloads.friendlyelec.com/os-images/h3/images):
 ```
 git clone https://github.com/friendlyarm/sd-fuse_h3 -b master --single-branch sd-fuse_h3
 cd sd-fuse_h3
-wget http://112.124.9.243/dvdfiles/h3/images-for-eflasher/friendlycore-jammy-images.tgz
+wget https://downloads.friendlyelec.com/os-images/h3/images/friendlycore-jammy-images.tgz
 tar xvzf friendlycore-jammy-images.tgz
 ```
 Download the u-boot source code from github that matches the OS version, the environment variable UBOOT_SRC is used to specify the local source code directory:
@@ -194,6 +196,13 @@ Download the u-boot source code from github that matches the OS version, the env
 git clone https://github.com/friendlyarm/u-boot -b sunxi-v2017.x --depth 1 uboot
 UBOOT_SRC=uboot ./build-uboot.sh friendlycore-jammy
 ```
+### Non-Interactive Mode (SDFUSE_NONINTERACTIVE)
+Set `SDFUSE_NONINTERACTIVE=y` to skip prompts before installing packages and downloading missing image files. Example:
+```
+export SDFUSE_NONINTERACTIVE=y
+./mk-sd-image.sh friendlycore-jammy
+```
+
 ### Common Issues and Solutions
 * Unable to boot after creating rootfs (Solution: The file permissions in the file system might be corrupted. Make sure to use the tools/extract-rootfs-tar.sh script to extract rootfs, and use the -cpzf options with the tar command for packaging.)
 * Process exits during creation (Solution: Ensure the machine has sufficient memory.)

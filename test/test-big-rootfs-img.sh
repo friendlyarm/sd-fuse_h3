@@ -1,8 +1,11 @@
 #!/bin/bash
 set -eu
 
-HTTP_SERVER=112.124.9.243
-
+if [ -f "$(dirname "$(readlink -f "$0")")/../.use-local-r2" ]; then
+    CDN_URL=http://cdn.local/friendlyelec-cdn/os-images/h3/images
+else
+    CDN_URL=https://downloads.friendlyelec.com/os-images/h3/images
+fi
 # hack for me
 [ -f /etc/friendlyarm ] && source /etc/friendlyarm $(basename $(builtin cd ..; pwd))
 
@@ -13,9 +16,9 @@ sudo rm -rf tmp/*
 cd tmp
 git clone ../../.git sd-fuse_h3
 cd sd-fuse_h3
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/H3/images-for-eflasher/friendlycore-focal-images.tgz
+wget ${CDN_URL}/friendlycore-focal-images.tgz
 tar xzf friendlycore-focal-images.tgz
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/H3/images-for-eflasher/emmc-flasher-images.tgz
+wget ${CDN_URL}/emmc-flasher-images.tgz
 tar xzf emmc-flasher-images.tgz
 
 # make big file
